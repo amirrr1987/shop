@@ -1,0 +1,13 @@
+{
+  "name": "frontend-panel-host",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": ["host", "remotes/*", "shared"],
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
