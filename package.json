@@ -3,7 +3,10 @@
   "type": "module",
   "version": "0.0.0",
   "private": true,
-  "workspaces": ["host", "remotes/*", "shared"],
+  "workspaces": [
+    "host",
+    "remotes/*"
+  ],
   "devDependencies": {
     "@types/bun": "latest"
   },
