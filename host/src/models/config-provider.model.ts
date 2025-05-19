@@ -1,10 +1,10 @@
-import type { VueNode } from "ant-design-vue/es/_util/type"
-import type { CSPConfig, SizeType } from "ant-design-vue/es/config-provider"
-import type { ThemeConfig } from "ant-design-vue/es/config-provider/context"
-import type { RequiredMark } from "ant-design-vue/es/form/Form"
-import type { ValidateMessages } from "ant-design-vue/es/form/interface"
-import type { Locale } from "ant-design-vue/es/locale"
-import type { TransformCellTextProps } from "ant-design-vue/es/table/interface"
+import type { VueNode } from 'ant-design-vue/es/_util/type'
+import type { CSPConfig, SizeType } from 'ant-design-vue/es/config-provider'
+import type { ThemeConfig } from 'ant-design-vue/es/config-provider/context'
+import type { RequiredMark } from 'ant-design-vue/es/form/Form'
+import type { ValidateMessages } from 'ant-design-vue/es/form/interface'
+import type { Locale } from 'ant-design-vue/es/locale'
+import type { TransformCellTextProps } from 'ant-design-vue/es/table/interface'
 
 export interface ConfigProvider {
   iconPrefixCls?: string

@@ -5,6 +5,7 @@
   "private": true,
   "workspaces": [
     "host",
+    "shared",
     "remotes/*"
   ],
   "devDependencies": {
