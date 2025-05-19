@@ -10,9 +10,9 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/about',
+      path: '/permission/:pathMatch(.*)*',
       name: 'about',
-      component: () => import('remotePermissions/PermissionBootstrap'),
+      component: () => import('@/views/RemotePermissionWapper.vue'),
     },
   ],
 })

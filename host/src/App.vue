@@ -1,7 +1,7 @@
 <template>
   <TheConfigProvider>
     <RouterLink to="/">home</RouterLink>
-    <RouterLink to="/about">about</RouterLink>
+    <RouterLink to="/permission">permission</RouterLink>
     <Button type="primary" @click="configProviderStore.configProvider.componentSize = 'small'">
       small
     </Button>
@@ -19,4 +19,5 @@ import { TheConfigProvider } from '@Panel/shared'
 import { useConfigProviderStore } from '@Panel/shared'
 
 const configProviderStore = useConfigProviderStore()
+configProviderStore.configProvider.direction = 'rtl'
 </script>

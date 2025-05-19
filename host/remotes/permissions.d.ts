@@ -1,10 +1,11 @@
 // types/remote-permissions.d.ts
 
-import type { DefineComponent } from "vue"
+import type { DefineComponent } from 'vue'
 
-declare module "remotePermissions/PermissionBootstrap" {
-  const component : DefineComponent<{}, {}, any>
-  export default component
+declare module 'remotePermissions/PermissionBootstrap' {
+  // const component : DefineComponent<{}, {}, any>
+  // export default component
+  export function mountPermissionApp(el: Element): void
 }
 
 // declare module "remotePermissions/PermissionStore" {
