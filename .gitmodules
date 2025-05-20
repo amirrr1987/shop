@@ -1,0 +1,3 @@
+[submodule "remotes/permissions"]
+	path = remotes/permissions
+	url = https://github.com/amirshop/permissions
