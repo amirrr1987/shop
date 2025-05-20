@@ -1,6 +1,0 @@
-[submodule "remotes/permissions"]
-	path = remotes/permissions
-	url = https://github.com/amirshop/frontend-panel-remote-permissions.git
-[submodule "shared"]
-	path = shared
-	url = https://github.com/amirshop/frontend-panel-shared.git
