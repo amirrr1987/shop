@@ -23,6 +23,12 @@
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
+    "noPropertyAccessFromIndexSignature": false,
+
+
+    "baseUrl": ".",
+    "paths": {
+      "@Panel/Shared": ["shared/index.ts"] // یا اگر exportها در src هست:
+    }
   }
 }

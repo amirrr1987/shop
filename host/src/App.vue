@@ -15,8 +15,8 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { Button } from 'ant-design-vue/es'
-import { TheConfigProvider } from '@Panel/shared'
-import { useConfigProviderStore } from '@Panel/shared'
+// import { TheConfigProvider } from '@Panel/shared'
+import { TheConfigProvider, useConfigProviderStore } from '@Panel/shared'
 
 const configProviderStore = useConfigProviderStore()
 configProviderStore.configProvider.direction = 'rtl'
