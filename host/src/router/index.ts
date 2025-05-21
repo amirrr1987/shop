@@ -12,7 +12,7 @@ const router = createRouter({
     {
       path: '/permission/:pathMatch(.*)*',
       name: 'about',
-      component: () => import('@/views/RemotePermissionWapper.vue'),
+      component: () => import('@/views/RemotePermissionWrapper.vue'),
     },
   ],
 })

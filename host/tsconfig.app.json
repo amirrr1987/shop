@@ -7,7 +7,8 @@
 
     "paths": {
       "@/*": ["./src/*"],
-      "remotePermissions/PermissionBootstrap": ["./remotes/permissions.d.ts"]
+      "remotePermissions/PermissionBootstrap": ["./remotes/permissions.d.ts"],
+      "remotePermissions/PermissionApp": ["./remotes/permissions.d.ts"]
     }
   }
 }

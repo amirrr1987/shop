@@ -18,9 +18,9 @@ export default defineConfig({
       name: 'host',
       filename: 'hostEntry.js',
       remotes: {
-        remotePermissions: 'http://localhost:5911/assets/permissionsEntry.js',
+        // remotePermissions: 'http://localhost:5911/assets/permissionsEntry.js',
       },
-      shared: ['vue', 'pinia', 'vue-router'],
+      shared: ['vue', 'pinia', 'vue-router', 'ant-design-vue'],
     }),
   ],
   build: {

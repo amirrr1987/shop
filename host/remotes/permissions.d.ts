@@ -2,14 +2,20 @@
 
 import type { DefineComponent } from 'vue'
 
-declare module 'remotePermissions/PermissionBootstrap' {
-  // const component : DefineComponent<{}, {}, any>
-  // export default component
-  export function mountPermissionApp(el: Element): void
+declare module 'remotePermissions/PermissionApp' {
+  const component: DefineComponent<{}, {}, any>
+  export default component
 }
 
-// declare module "remotePermissions/PermissionStore" {
-//   import { Store } from "pinia";
-//   import { PermissionState } from "@/types/permission";
-//   export function usePermissionStore(): Store<string, PermissionState>;
-// }
+declare module 'remotePermissions/PermissionBootstrap' {
+}
+
+declare module 'remotePermissions/PermissionRouter' {
+  
+}
+
+declare module "remotePermissions/PermissionStore" {
+  import { Store } from "pinia";
+  import { PermissionState } from "@/types/permission";
+  export function usePermissionStore(): Store<string, PermissionState>;
+}
