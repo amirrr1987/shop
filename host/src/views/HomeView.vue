@@ -1,9 +1,6 @@
-<script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
-</script>
-
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <Card>Card</Card>
 </template>
+<script setup lang="ts">
+import { Card } from 'ant-design-vue/es'
+</script>
