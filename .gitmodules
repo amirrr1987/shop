@@ -1,7 +1,0 @@
-[submodule "remotes/permissions"]
-	path = remotes/permissions
-	url = https://github.com/amirshop/permissions
-	
-[submodule "shared"]
-	path = shared
-	url = https://github.com/amirshop/shared
