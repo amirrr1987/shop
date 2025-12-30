@@ -7,6 +7,7 @@ import CategoryList from '@/views/categories/CategoryList.vue'
 
 import MediaList from '@/views/media/MediaList.vue'
 import TheSetting from '@/views/settings/TheSetting.vue'
+import MenuList from '@/views/menus/MenuList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,11 @@ const router = createRouter({
           path: '/categories',
           component: CategoryList,
           name: 'TheCategories',
+        },
+        {
+          path: '/menus',
+          component: MenuList,
+          name: 'TheMenus',
         },
         {
           path: '/settings',

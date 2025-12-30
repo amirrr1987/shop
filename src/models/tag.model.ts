@@ -6,18 +6,15 @@ export const createTagSchema = z.object({
   description: z.string().min(3, 'توضیحات باید حداقل ۳ کاراکتر باشد').optional().nullable(),
 })
 
-export const updateTagSchema = z.object({
-  id: z.uuid(),
-  title: z.string().min(1, 'عنوان تگ الزامی است').optional(),
-  slug: z.string().min(1, 'اسلاگ تگ الزامی است').optional(),
-  description: z.string().min(3, 'توضیحات باید حداقل ۳ کاراکتر باشد').optional().nullable(),
+export const updateTagSchema = createTagSchema.partial().extend({
+  id: z.string().uuid(),
 })
 
 export const tagSchema = z.object({
-  id: z.uuid(),
-  title: z.string().min(1, 'عنوان تگ الزامی است'),
-  slug: z.string().min(1, 'اسلاگ تگ الزامی است'),
-  description: z.string().min(3, 'توضیحات باید حداقل ۳ کاراکتر باشد').optional().nullable(),
+  id: z.string().uuid(),
+  title: z.string(),
+  slug: z.string(),
+  description: z.string().nullable().optional(),
   createdAt: z.string().or(z.date()),
   updatedAt: z.string().or(z.date()),
 })
@@ -25,4 +22,3 @@ export const tagSchema = z.object({
 export type CreateTag = z.infer<typeof createTagSchema>
 export type UpdateTag = z.infer<typeof updateTagSchema>
 export type Tag = z.infer<typeof tagSchema>
-

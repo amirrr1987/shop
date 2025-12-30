@@ -1,5 +1,5 @@
 <template>
-  <Card title="Products">
+  <Card title="محصولات">
     <template #extra>
       <Button type="primary" @click="openCreate" :icon="h(PlusOutlined)">افزودن محصول</Button>
     </template>
@@ -16,6 +16,7 @@
       :columns="columns"
       :dataSource="productStore.products"
       :row-key="(record) => record.id"
+      :scroll="{ x: 1200 }"
     />
   </Card>
 </template>
@@ -30,18 +31,33 @@ import {
   Popconfirm,
   Image,
   message,
+  Tag as AntTag,
 } from 'ant-design-vue'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons-vue'
+import { DeleteOutlined, EditOutlined, PlusOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons-vue'
 import { h, onMounted, ref } from 'vue'
 import ProductForm from './components/ProductForm.vue'
 import type { CreateProduct, Product, UpdateProduct } from '@/models/product.model'
 import dayjs from 'dayjs'
+
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:5000'
+
 const productStore = useProductStore()
 const open = ref(false)
 
-const emptyProduct = (): CreateProduct | UpdateProduct => ({}) as CreateProduct | UpdateProduct
+const emptyProduct = (): CreateProduct | UpdateProduct =>
+  ({
+    name: '',
+    slug: '',
+    price: 0,
+    discountPrice: null,
+    description: '',
+    image: '',
+    stock: 0,
+    isActive: true,
+    tagIds: [],
+    categoryIds: [],
+  }) as CreateProduct | UpdateProduct
 
 const selectedProduct = ref<CreateProduct | UpdateProduct>(emptyProduct())
 
@@ -58,38 +74,59 @@ const handleCancel = () => {
 const isLoading = ref(false)
 
 const handleSubmit = async () => {
-  isLoading.value = false
+  isLoading.value = true
   const payload = selectedProduct.value
-  if ('id' in payload) {
-    await productStore.updateProduct({
-      name: payload.name,
-      price: payload.price,
-      description: payload.description,
-      id: payload.id,
-      image: payload.image,
-    })
-    message.success('محصول با موفقیت ویرایش شد.')
-  } else {
-    await productStore.createProduct({
-      name: payload.name,
-      price: payload.price,
-      description: payload.description,
-      image: payload.image,
-    })
-    message.success('محصول با موفقیت ثبت شد.')
-  }
 
-  open.value = false
-  selectedProduct.value = emptyProduct()
-  await productStore.getProducts()
+  try {
+    if ('id' in payload && payload.id) {
+      await productStore.updateProduct({
+        id: payload.id,
+        name: payload.name,
+        slug: payload.slug,
+        price: payload.price,
+        discountPrice: payload.discountPrice,
+        description: payload.description,
+        image: payload.image,
+        stock: payload.stock,
+        isActive: payload.isActive,
+        tagIds: payload.tagIds,
+        categoryIds: payload.categoryIds,
+      })
+      message.success('محصول با موفقیت ویرایش شد')
+    } else {
+      await productStore.createProduct({
+        name: payload.name!,
+        slug: payload.slug!,
+        price: payload.price!,
+        discountPrice: payload.discountPrice,
+        description: payload.description,
+        image: payload.image!,
+        stock: payload.stock ?? 0,
+        isActive: payload.isActive ?? true,
+        tagIds: payload.tagIds ?? [],
+        categoryIds: payload.categoryIds ?? [],
+      })
+      message.success('محصول با موفقیت ثبت شد')
+    }
+
+    open.value = false
+    selectedProduct.value = emptyProduct()
+    await productStore.getProducts()
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const formatPrice = (price: number) => {
+  return new Intl.NumberFormat('fa-IR').format(price)
 }
 
 const columns: TableColumnType<Product>[] = [
-  { title: 'ID', dataIndex: 'id' },
   {
     title: 'تصویر',
     dataIndex: 'image',
-    width: 120,
+    width: 80,
+    fixed: 'left',
     customRender: ({ text }) =>
       text
         ? h(Image, {
@@ -100,26 +137,96 @@ const columns: TableColumnType<Product>[] = [
           })
         : h('span', { class: 'text-gray-400' }, '-'),
   },
-  { title: 'نام', dataIndex: 'name' },
   {
-    title: 'قیمت (تومان)',
-    dataIndex: 'price',
-    customRender: ({ text }) => `${Number(text)}`,
+    title: 'نام',
+    dataIndex: 'name',
+    width: 200,
   },
-  { title: 'توضیحات', dataIndex: 'description' },
+  {
+    title: 'اسلاگ',
+    dataIndex: 'slug',
+    width: 150,
+    customRender: ({ text }) => h('code', { class: 'bg-gray-100 px-2 py-1 rounded text-xs' }, text),
+  },
+  {
+    title: 'قیمت',
+    dataIndex: 'price',
+    width: 120,
+    customRender: ({ record }) => {
+      const hasDiscount = record.discountPrice && record.discountPrice < record.price
+      return h('div', { class: 'flex flex-col' }, [
+        hasDiscount
+          ? h('span', { class: 'line-through text-gray-400 text-xs' }, `${formatPrice(record.price)} تومان`)
+          : null,
+        h(
+          'span',
+          { class: hasDiscount ? 'text-green-600 font-bold' : '' },
+          `${formatPrice(hasDiscount ? record.discountPrice! : record.price)} تومان`,
+        ),
+      ])
+    },
+  },
+  {
+    title: 'موجودی',
+    dataIndex: 'stock',
+    width: 80,
+    customRender: ({ text }) =>
+      h(
+        AntTag,
+        { color: text > 0 ? 'success' : 'error' },
+        () => (text > 0 ? text : 'ناموجود'),
+      ),
+  },
+  {
+    title: 'دسته‌بندی‌ها',
+    dataIndex: 'categories',
+    width: 180,
+    customRender: ({ record }) =>
+      record.categories?.length
+        ? h(
+            'div',
+            { class: 'flex flex-wrap gap-1' },
+            record.categories.map((cat) =>
+              h(AntTag, { color: 'blue', key: cat.id }, () => cat.name),
+            ),
+          )
+        : h('span', { class: 'text-gray-400' }, '-'),
+  },
+  {
+    title: 'تگ‌ها',
+    dataIndex: 'tags',
+    width: 180,
+    customRender: ({ record }) =>
+      record.tags?.length
+        ? h(
+            'div',
+            { class: 'flex flex-wrap gap-1' },
+            record.tags.map((tag) =>
+              h(AntTag, { color: 'purple', key: tag.id }, () => tag.title),
+            ),
+          )
+        : h('span', { class: 'text-gray-400' }, '-'),
+  },
+  {
+    title: 'وضعیت',
+    dataIndex: 'isActive',
+    width: 100,
+    customRender: ({ text }) =>
+      text
+        ? h(AntTag, { color: 'success', icon: h(CheckCircleOutlined) }, () => 'فعال')
+        : h(AntTag, { color: 'error', icon: h(CloseCircleOutlined) }, () => 'غیرفعال'),
+  },
   {
     title: 'تاریخ ایجاد',
     dataIndex: 'createdAt',
-    customRender: ({ text }) => dayjs(text).format('HH:mm:ss - YYYY/MM/DD'),
-  },
-  {
-    title: 'تاریخ بروزرسانی',
-    dataIndex: 'updatedAt',
-    customRender: ({ text }) => dayjs(text).format('HH:mm:ss - YYYY/MM/DD'),
+    width: 110,
+    customRender: ({ text }) => dayjs(text).format('YYYY/MM/DD'),
   },
   {
     title: 'عملیات',
     key: 'actions',
+    width: 120,
+    fixed: 'right',
     customRender: ({ record }) =>
       h('div', { class: 'flex gap-2' }, [
         h(Button, {
@@ -140,7 +247,7 @@ const columns: TableColumnType<Product>[] = [
             cancelText: 'خیر',
             onConfirm: async () => {
               await productStore.deleteProduct(record.id)
-              await productStore.getProducts()
+              message.success('محصول با موفقیت حذف شد')
             },
           },
           {

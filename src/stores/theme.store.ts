@@ -27,7 +27,13 @@ export const useThemeStore = defineStore("theme", () => {
     fontFamily: "var(--font-sans)",
   });
   const components = ref<OverrideToken>({
-    Layout: {},
+    Layout: {
+      colorBgTrigger: "#1677ff",
+      colorBgElevated: "#1677ff",
+      colorBgContainer: "#1677ff",
+      colorBgLayout: "#1677ff",
+    },
+
   });
   const algorithm = ref<MappingAlgorithm[]>([]);
 
