@@ -1,31 +1,21 @@
 <template>
   <Card :title="isEditMode ? 'ویرایش محصول' : 'افزودن محصول'">
     <Form layout="vertical" :model="form" ref="formRef" :rules="rules">
-      <FormItem label="تصویر" name="image" required>
-        <MediaInput v-model="formImage" :accept="[MediaType.IMAGE]" />
-      </FormItem>
-
-      <Row :gutter="16">
-        <Col :span="12">
-          <FormItem label="نام" name="name" required>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormItem label="تصویر" name="image" required>
+          <MediaInput v-model="formImage" :accept="[MediaType.IMAGE]" />
+        </FormItem>
+        <div class="grid grid-cols-2 md:grid-cols-12 gap-4">
+          <FormItem label="نام" name="name" required class="col-span-6">
             <Input v-model:value="form.name" placeholder="نام محصول" />
           </FormItem>
-        </Col>
-        <Col :span="12">
-          <FormItem label="اسلاگ" name="slug" required>
+          <FormItem label="اسلاگ" name="slug" required class="col-span-6">
             <Input v-model:value="form.slug" placeholder="slug-example" dir="ltr" />
           </FormItem>
-        </Col>
-      </Row>
-
-      <Row :gutter="16">
-        <Col :span="8">
-          <FormItem label="قیمت (تومان)" name="price" required>
+          <FormItem label="قیمت (تومان)" name="price" required class="col-span-4">
             <InputNumber v-model:value="form.price" :min="1" class="w-full!" />
           </FormItem>
-        </Col>
-        <Col :span="8">
-          <FormItem label="قیمت تخفیف‌خورده" name="discountPrice">
+          <FormItem label="قیمت تخفیف‌خورده" name="discountPrice" class="col-span-4">
             <InputNumber
               :value="form.discountPrice ?? undefined"
               @update:value="(val) => (form.discountPrice = typeof val === 'number' ? val : null)"
@@ -34,17 +24,10 @@
               placeholder="اختیاری"
             />
           </FormItem>
-        </Col>
-        <Col :span="8">
-          <FormItem label="موجودی" name="stock">
+          <FormItem label="موجودی" name="stock" class="col-span-4">
             <InputNumber v-model:value="form.stock" :min="0" class="w-full!" />
           </FormItem>
-        </Col>
-      </Row>
-
-      <Row :gutter="16">
-        <Col :span="12">
-          <FormItem label="دسته‌بندی‌ها" name="categoryIds">
+          <FormItem label="دسته‌بندی‌ها" name="categoryIds" class="col-span-4">
             <Select
               v-model:value="form.categoryIds"
               mode="multiple"
@@ -55,9 +38,7 @@
               :options="categoryOptions"
             />
           </FormItem>
-        </Col>
-        <Col :span="12">
-          <FormItem label="تگ‌ها" name="tagIds">
+          <FormItem label="تگ‌ها" name="tagIds" class="col-span-4">
             <Select
               v-model:value="form.tagIds"
               mode="multiple"
@@ -68,32 +49,32 @@
               :options="tagOptions"
             />
           </FormItem>
-        </Col>
-      </Row>
 
-      <FormItem label="وضعیت" name="isActive">
-        <Switch
-          v-model:checked="form.isActive"
-          checked-children="فعال"
-          un-checked-children="غیرفعال"
-        />
-      </FormItem>
+          <FormItem label="وضعیت" name="isActive" class="col-span-4">
+            <Switch
+              v-model:checked="form.isActive"
+              checked-children="فعال"
+              un-checked-children="غیرفعال"
+            />
+          </FormItem>
 
-      <FormItem label="توضیحات" name="description">
-        <Textarea
-          :value="form.description ?? ''"
-          @update:value="(val) => (form.description = val || '')"
-          placeholder="توضیحات محصول"
-          :rows="4"
-        />
-      </FormItem>
+          <FormItem label="توضیحات" name="description" class="col-span-12">
+            <Textarea
+              :value="form.description ?? ''"
+              @update:value="(val) => (form.description = val || '')"
+              placeholder="توضیحات محصول"
+              :rows="4"
+            />
+          </FormItem>
 
-      <FormItem>
-        <Button type="primary" :loading="productStore.loading" @click="handleSubmit">
-          {{ isEditMode ? 'ذخیره تغییرات' : 'ایجاد محصول' }}
-        </Button>
-        <Button class="ml-2" @click="handleCancel">انصراف</Button>
-      </FormItem>
+          <Space class="col-span-12">
+            <Button type="primary" :loading="productStore.loading" @click="handleSubmit">
+              {{ isEditMode ? 'ذخیره تغییرات' : 'ایجاد محصول' }}
+            </Button>
+            <Button class="ml-2" @click="handleCancel">انصراف</Button>
+          </Space>
+        </div>
+      </div>
     </Form>
   </Card>
 </template>
@@ -116,6 +97,7 @@ import {
   Col,
   Button,
   message,
+  Space,
 } from 'ant-design-vue'
 import type { FormInstance, Rule } from 'ant-design-vue/es/form'
 import { ref, computed, onMounted } from 'vue'
