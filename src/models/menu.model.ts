@@ -3,14 +3,14 @@ import { z } from 'zod'
 export const createMenuSchema = z.object({
   title: z.string().min(1, 'عنوان منو الزامی است'),
   location: z.string().min(1, 'موقعیت منو الزامی است'),
-  link: z.string().nullable().optional(),
+  link: z.string().optional(),
   linkType: z.enum(['internal', 'external', 'category', 'product']).default('internal'),
-  icon: z.string().nullable().optional(),
-  image: z.string().nullable().optional(),
+  icon: z.string().optional(),
+  image: z.string().optional(),
   sortOrder: z.number().int().min(0).default(0),
   isActive: z.boolean().default(true),
   openInNewTab: z.boolean().default(false),
-  parentId: z.string().uuid().nullable().optional(),
+  parentId: z.uuid().optional(),
 })
 
 export const updateMenuSchema = createMenuSchema.partial().extend({

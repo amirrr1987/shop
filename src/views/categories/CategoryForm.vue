@@ -1,12 +1,5 @@
 <template>
-  <Modal
-    v-model:open="open"
-    :title="'id' in selectedCategory ? 'ویرایش دسته‌بندی' : 'افزودن دسته‌بندی'"
-    @ok="handleOk"
-    @cancel="handleCancel"
-    destroyOnClose
-    width="600px"
-  >
+  <Card :title="isEditMode ? 'ویرایش دسته‌بندی' : 'افزودن دسته‌بندی'">
     <Form layout="vertical" :model="form" ref="formRef" :rules="rules">
       <FormItem label="نام" name="name" required>
         <Input v-model:value="form.name" placeholder="نام دسته‌بندی را وارد کنید" />
@@ -35,7 +28,11 @@
         </Col>
         <Col :span="12">
           <FormItem label="وضعیت" name="isActive">
-            <Switch v-model:checked="form.isActive" checked-children="فعال" un-checked-children="غیرفعال" />
+            <Switch
+              v-model:checked="form.isActive"
+              checked-children="فعال"
+              un-checked-children="غیرفعال"
+            />
           </FormItem>
         </Col>
       </Row>
@@ -51,34 +48,52 @@
           :rows="4"
         />
       </FormItem>
+      <Divider />
+      <Space>
+        <Button type="primary" :loading="categoryStore.loading" @click="handleSubmit">
+          {{ isEditMode ? 'ذخیره تغییرات' : 'ایجاد دسته‌بندی' }}
+        </Button>
+        <Button class="ml-2" @click="handleCancel">انصراف</Button>
+      </Space>
     </Form>
-  </Modal>
+  </Card>
 </template>
 
 <script setup lang="ts">
 import type { CreateCategory, UpdateCategory } from '@/models/category.model'
 import { useCategoryStore } from '@/stores/category.store'
-import { Modal, Form, FormItem, Input, Textarea, Select, InputNumber, Switch, Row, Col } from 'ant-design-vue'
+import {
+  Card,
+  Form,
+  FormItem,
+  Input,
+  Textarea,
+  Select,
+  InputNumber,
+  Switch,
+  Row,
+  Col,
+  Button,
+  message,
+  Space,
+  Divider,
+} from 'ant-design-vue'
 import type { FormInstance, Rule } from 'ant-design-vue/es/form'
-import { ref, watch, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-const open = defineModel<boolean>('open', { required: true })
-const selectedCategory = defineModel<CreateCategory | UpdateCategory>('selectedCategory', {
-  required: true,
-})
-
-const emits = defineEmits<{
-  (e: 'submit'): void
-  (e: 'cancel'): void
-}>()
-
+const route = useRoute()
+const router = useRouter()
 const categoryStore = useCategoryStore()
+
+const isEditMode = computed(() => !!route.params.id)
+const categoryId = computed(() => route.params.id as string)
 
 const formRef = ref<FormInstance>()
 
 // Filter out current category from parent options to prevent self-reference
 const parentOptions = computed(() => {
-  const currentId = 'id' in selectedCategory.value ? selectedCategory.value.id : null
+  const currentId = categoryId.value
   return categoryStore.categories
     .filter((cat) => cat.id !== currentId)
     .map((cat) => ({
@@ -103,48 +118,76 @@ const rules: Record<string, Rule[]> = {
   ],
   description: [
     {
-      min: 3,
-      message: 'توضیحات باید حداقل ۳ کاراکتر باشد',
+      validator: (_rule, value) => {
+        if (value && value.length > 0 && value.length < 3) {
+          return Promise.reject('توضیحات باید حداقل ۳ کاراکتر باشد')
+        }
+        return Promise.resolve()
+      },
       trigger: 'blur',
     },
   ],
 }
 
-const emptyCategory = (): CreateCategory | UpdateCategory =>
-  ({
-    name: '',
-    slug: '',
-    description: '',
-    image: null,
-    isActive: true,
-    sortOrder: 0,
-    parentId: null,
-  }) as CreateCategory | UpdateCategory
+const emptyCategory = (): CreateCategory => ({
+  name: '',
+  slug: '',
+  description: '',
+  image: '',
+  isActive: true,
+  sortOrder: 0,
+  parentId: undefined,
+})
 
 const form = ref<CreateCategory | UpdateCategory>(emptyCategory())
 
-watch(
-  selectedCategory,
-  (value) => {
-    form.value = { ...emptyCategory(), ...value }
-    formRef.value?.clearValidate()
-  },
-  { immediate: true },
-)
+const loadCategory = async () => {
+  if (isEditMode.value && categoryId.value) {
+    try {
+      const category = await categoryStore.getCategory(categoryId.value)
+      if (category) {
+        form.value = {
+          id: category.id,
+          name: category.name,
+          slug: category.slug,
+          description: category.description || '',
+          image: category.image || '',
+          isActive: category.isActive,
+          sortOrder: category.sortOrder,
+          parentId: category.parentId,
+        } as UpdateCategory
+      }
+    } catch (error) {
+      console.error('Failed to load category:', error)
+      message.error('خطا در بارگذاری دسته‌بندی')
+    }
+  }
+}
 
-const handleOk = async () => {
+const handleSubmit = async () => {
   try {
     await formRef.value?.validate()
-    selectedCategory.value = { ...form.value }
-    emits('submit')
+
+    if (isEditMode.value) {
+      await categoryStore.updateCategory(form.value as UpdateCategory)
+      message.success('دسته‌بندی با موفقیت ویرایش شد')
+    } else {
+      await categoryStore.createCategory(form.value as CreateCategory)
+      message.success('دسته‌بندی با موفقیت ثبت شد')
+    }
+
+    router.push({ name: 'TheCategoryList' })
   } catch (error) {
-    console.error('Form validation failed:', error)
+    console.error('Form validation or submission failed:', error)
   }
 }
 
 const handleCancel = () => {
-  form.value = emptyCategory()
-  formRef.value?.clearValidate()
-  emits('cancel')
+  router.push({ name: 'TheCategoryList' })
 }
+
+onMounted(async () => {
+  await categoryStore.getCategories()
+  await loadCategory()
+})
 </script>

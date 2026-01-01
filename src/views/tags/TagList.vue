@@ -1,16 +1,5 @@
 <template>
   <Card title="تگ‌ها">
-    <template #extra>
-      <Button type="primary" @click="openCreate" :icon="h(PlusOutlined)">افزودن تگ</Button>
-    </template>
-
-    <TagForm
-      v-model:open="open"
-      v-model:selected-tag="selectedTag"
-      @submit="handleSubmit"
-      @cancel="handleCancel"
-    />
-
     <Table
       :columns="columns"
       :dataSource="tagStore.tags"
@@ -30,49 +19,14 @@ import {
   Popconfirm,
   Tag as AntTag,
 } from 'ant-design-vue'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons-vue'
-import { h, onMounted, ref } from 'vue'
-import TagForm from './components/TagForm.vue'
-import type { CreateTag, Tag, UpdateTag } from '@/models/tag.model'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue'
+import { h, onMounted } from 'vue'
+import type { Tag } from '@/models/tag.model'
 import dayjs from 'dayjs'
+import { useRouter } from 'vue-router'
 
 const tagStore = useTagStore()
-const open = ref(false)
-
-const emptyTag = (): CreateTag | UpdateTag => ({}) as CreateTag | UpdateTag
-
-const selectedTag = ref<CreateTag | UpdateTag>(emptyTag())
-
-const openCreate = () => {
-  selectedTag.value = emptyTag()
-  open.value = true
-}
-
-const handleCancel = () => {
-  open.value = false
-  selectedTag.value = emptyTag()
-}
-
-const handleSubmit = async () => {
-  const payload = selectedTag.value
-  if ('id' in payload && payload.id) {
-    await tagStore.updateTag({
-      id: payload.id,
-      title: payload.title,
-      slug: payload.slug,
-      description: payload.description,
-    })
-  } else {
-    await tagStore.createTag({
-      title: payload.title!,
-      slug: payload.slug!,
-      description: payload.description,
-    })
-  }
-
-  open.value = false
-  selectedTag.value = emptyTag()
-}
+const router = useRouter()
 
 const columns: TableColumnType<Tag>[] = [
   { title: 'ID', dataIndex: 'id' },
@@ -111,8 +65,7 @@ const columns: TableColumnType<Tag>[] = [
           class: 'flex! items-center justify-center',
           icon: h(EditOutlined),
           onClick: () => {
-            selectedTag.value = { ...record }
-            open.value = true
+            router.push({ name: 'TheTagEdit', params: { id: record.id } })
           },
         }),
         h(

@@ -6,6 +6,10 @@ export const useCategoryService = () => {
     const response = await axiosInstance.get('/categories')
     return response.data
   }
+  const getCategory = async (categoryId: Category['id']) => {
+    const response = await axiosInstance.get(`/categories/${categoryId}`)
+    return response.data
+  }
   const createCategory = async (category: CreateCategory) => {
     const response = await axiosInstance.post('/categories', category)
     return response.data
@@ -18,6 +22,6 @@ export const useCategoryService = () => {
     const response = await axiosInstance.delete(`/categories/${categoryId}`)
     return response.data
   }
-  return { getCategories, createCategory, updateCategory, deleteCategory }
+  return { getCategories, getCategory, createCategory, updateCategory, deleteCategory }
 }
 

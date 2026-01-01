@@ -6,6 +6,10 @@ export const useProductService = () => {
     const response = await axiosInstance.get('/products')
     return response.data
   }
+  const getProduct = async (productId: Product['id']) => {
+    const response = await axiosInstance.get(`/products/${productId}`)
+    return response.data
+  }
   const createProduct = async (product: CreateProduct) => {
     const response = await axiosInstance.post('/products', product)
     return response.data
@@ -19,5 +23,5 @@ export const useProductService = () => {
     const response = await axiosInstance.delete(`/products/${productId}`)
     return response.data
   }
-  return { getProducts, createProduct, updateProduct, deleteProduct }
+  return { getProducts, getProduct, createProduct, updateProduct, deleteProduct }
 }

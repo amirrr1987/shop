@@ -18,6 +18,16 @@ export const useTagStore = defineStore('tag', () => {
     }
   }
 
+  const getTag = async (tagId: Tag['id']) => {
+    loading.value = true
+    try {
+      const response = await tagService.getTag(tagId)
+      return response
+    } finally {
+      loading.value = false
+    }
+  }
+
   const createTag = async (tag: CreateTag) => {
     await tagService.createTag(tag)
     await getTags()
@@ -33,6 +43,6 @@ export const useTagStore = defineStore('tag', () => {
     await getTags()
   }
 
-  return { tags, loading, getTags, createTag, updateTag, deleteTag }
+  return { tags, loading, getTags, getTag, createTag, updateTag, deleteTag }
 })
 

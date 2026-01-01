@@ -1,17 +1,5 @@
 <template>
   <Card title="محصولات">
-    <template #extra>
-      <Button type="primary" @click="openCreate" :icon="h(PlusOutlined)">افزودن محصول</Button>
-    </template>
-
-    <ProductForm
-      v-model:open="open"
-      v-model:selected-product="selectedProduct"
-      @submit="handleSubmit"
-      @cancel="handleCancel"
-      :isLoading="isLoading"
-    />
-
     <Table
       :columns="columns"
       :dataSource="productStore.products"
@@ -33,89 +21,23 @@ import {
   message,
   Tag as AntTag,
 } from 'ant-design-vue'
-import { DeleteOutlined, EditOutlined, PlusOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons-vue'
-import { h, onMounted, ref } from 'vue'
-import ProductForm from './components/ProductForm.vue'
-import type { CreateProduct, Product, UpdateProduct } from '@/models/product.model'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+} from '@ant-design/icons-vue'
+import { h, onMounted } from 'vue'
+import type { Product } from '@/models/product.model'
 import dayjs from 'dayjs'
+import { useRouter } from 'vue-router'
 
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:5000'
 
 const productStore = useProductStore()
-const open = ref(false)
+const router = useRouter()
 
-const emptyProduct = (): CreateProduct | UpdateProduct =>
-  ({
-    name: '',
-    slug: '',
-    price: 0,
-    discountPrice: null,
-    description: '',
-    image: '',
-    stock: 0,
-    isActive: true,
-    tagIds: [],
-    categoryIds: [],
-  }) as CreateProduct | UpdateProduct
-
-const selectedProduct = ref<CreateProduct | UpdateProduct>(emptyProduct())
-
-const openCreate = () => {
-  selectedProduct.value = emptyProduct()
-  open.value = true
-}
-
-const handleCancel = () => {
-  open.value = false
-  selectedProduct.value = emptyProduct()
-}
-
-const isLoading = ref(false)
-
-const handleSubmit = async () => {
-  isLoading.value = true
-  const payload = selectedProduct.value
-
-  try {
-    if ('id' in payload && payload.id) {
-      await productStore.updateProduct({
-        id: payload.id,
-        name: payload.name,
-        slug: payload.slug,
-        price: payload.price,
-        discountPrice: payload.discountPrice,
-        description: payload.description,
-        image: payload.image,
-        stock: payload.stock,
-        isActive: payload.isActive,
-        tagIds: payload.tagIds,
-        categoryIds: payload.categoryIds,
-      })
-      message.success('محصول با موفقیت ویرایش شد')
-    } else {
-      await productStore.createProduct({
-        name: payload.name!,
-        slug: payload.slug!,
-        price: payload.price!,
-        discountPrice: payload.discountPrice,
-        description: payload.description,
-        image: payload.image!,
-        stock: payload.stock ?? 0,
-        isActive: payload.isActive ?? true,
-        tagIds: payload.tagIds ?? [],
-        categoryIds: payload.categoryIds ?? [],
-      })
-      message.success('محصول با موفقیت ثبت شد')
-    }
-
-    open.value = false
-    selectedProduct.value = emptyProduct()
-    await productStore.getProducts()
-  } finally {
-    isLoading.value = false
-  }
-}
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('fa-IR').format(price)
@@ -156,7 +78,11 @@ const columns: TableColumnType<Product>[] = [
       const hasDiscount = record.discountPrice && record.discountPrice < record.price
       return h('div', { class: 'flex flex-col' }, [
         hasDiscount
-          ? h('span', { class: 'line-through text-gray-400 text-xs' }, `${formatPrice(record.price)} تومان`)
+          ? h(
+              'span',
+              { class: 'line-through text-gray-400 text-xs' },
+              `${formatPrice(record.price)} تومان`,
+            )
           : null,
         h(
           'span',
@@ -171,11 +97,7 @@ const columns: TableColumnType<Product>[] = [
     dataIndex: 'stock',
     width: 80,
     customRender: ({ text }) =>
-      h(
-        AntTag,
-        { color: text > 0 ? 'success' : 'error' },
-        () => (text > 0 ? text : 'ناموجود'),
-      ),
+      h(AntTag, { color: text > 0 ? 'success' : 'error' }, () => (text > 0 ? text : 'ناموجود')),
   },
   {
     title: 'دسته‌بندی‌ها',
@@ -201,9 +123,7 @@ const columns: TableColumnType<Product>[] = [
         ? h(
             'div',
             { class: 'flex flex-wrap gap-1' },
-            record.tags.map((tag) =>
-              h(AntTag, { color: 'purple', key: tag.id }, () => tag.title),
-            ),
+            record.tags.map((tag) => h(AntTag, { color: 'purple', key: tag.id }, () => tag.title)),
           )
         : h('span', { class: 'text-gray-400' }, '-'),
   },
@@ -234,8 +154,7 @@ const columns: TableColumnType<Product>[] = [
           class: 'flex! items-center justify-center',
           icon: h(EditOutlined),
           onClick: () => {
-            selectedProduct.value = { ...record }
-            open.value = true
+            router.push({ name: 'TheProductEdit', params: { id: record.id } })
           },
         }),
         h(

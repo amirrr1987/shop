@@ -79,21 +79,7 @@
             <SelectOption value="audio">صوت‌ها</SelectOption>
             <SelectOption value="document">اسناد</SelectOption>
           </Select>
-          <Button type="primary" @click="showUploader = true">
-            <UploadOutlined /> آپلود جدید
-          </Button>
         </div>
-
-        <!-- Upload Modal -->
-        <Modal
-          v-model:open="showUploader"
-          title="آپلود فایل"
-          :footer="null"
-          width="500px"
-          destroy-on-close
-        >
-          <!-- <MediaUploader @uploaded="onUploaded" /> -->
-        </Modal>
 
         <!-- Media Grid -->
         <Spin :spinning="loading">
@@ -166,14 +152,12 @@ import {
   FileOutlined,
   DeleteOutlined,
   SwapOutlined,
-  UploadOutlined,
   VideoCameraOutlined,
   SoundOutlined,
   CheckCircleFilled,
 } from '@ant-design/icons-vue'
 import { MediaType, type Media, type QueryMedia } from '@/models/media.model'
 import { useMediaService } from '@/services/media.service'
-// import MediaUploader from '@/views/media/components/MediaUploader.vue'
 
 const props = defineProps<{
   modelValue?: string
@@ -187,14 +171,13 @@ const emit = defineEmits<{
 const mediaService = useMediaService()
 
 const showSelector = ref(false)
-const showUploader = ref(false)
 const loading = ref(false)
 const mediaList = ref<Media[]>([])
 const selectedMedia = ref<Media | null>(null)
 const tempSelected = ref<Media | null>(null)
 
 const searchQuery = ref('')
-const filterType = ref<MediaType | undefined>(props.accept?.[0])
+const filterType = ref<MediaType | undefined>()
 const currentPage = ref(1)
 
 const meta = ref({
@@ -296,10 +279,7 @@ const handlePageChange = (page: number) => {
   fetchMedia()
 }
 
-const onUploaded = () => {
-  showUploader.value = false
-  fetchMedia()
-}
+
 
 // Load selected media if modelValue is provided
 watch(

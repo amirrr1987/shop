@@ -1,13 +1,5 @@
 <template>
-  <Modal
-    v-model:open="open"
-    :title="'id' in selectedProduct ? 'ویرایش محصول' : 'افزودن محصول'"
-    @ok="handleOk"
-    @cancel="handleCancel"
-    destroyOnClose
-    :confirmLoading="isLoading"
-    width="700px"
-  >
+  <Card :title="isEditMode ? 'ویرایش محصول' : 'افزودن محصول'">
     <Form layout="vertical" :model="form" ref="formRef" :rules="rules">
       <FormItem label="تصویر" name="image" required>
         <MediaInput v-model="formImage" :accept="[MediaType.IMAGE]" />
@@ -34,7 +26,13 @@
         </Col>
         <Col :span="8">
           <FormItem label="قیمت تخفیف‌خورده" name="discountPrice">
-            <InputNumber v-model:value="form.discountPrice" :min="0" class="w-full!" placeholder="اختیاری" />
+            <InputNumber
+              :value="form.discountPrice ?? undefined"
+              @update:value="(val) => (form.discountPrice = typeof val === 'number' ? val : null)"
+              :min="0"
+              class="w-full!"
+              placeholder="اختیاری"
+            />
           </FormItem>
         </Col>
         <Col :span="8">
@@ -74,22 +72,39 @@
       </Row>
 
       <FormItem label="وضعیت" name="isActive">
-        <Switch v-model:checked="form.isActive" checked-children="فعال" un-checked-children="غیرفعال" />
+        <Switch
+          v-model:checked="form.isActive"
+          checked-children="فعال"
+          un-checked-children="غیرفعال"
+        />
       </FormItem>
 
       <FormItem label="توضیحات" name="description">
-        <Textarea v-model:value="form.description" placeholder="توضیحات محصول" :rows="4" />
+        <Textarea
+          :value="form.description ?? ''"
+          @update:value="(val) => (form.description = val || '')"
+          placeholder="توضیحات محصول"
+          :rows="4"
+        />
+      </FormItem>
+
+      <FormItem>
+        <Button type="primary" :loading="productStore.loading" @click="handleSubmit">
+          {{ isEditMode ? 'ذخیره تغییرات' : 'ایجاد محصول' }}
+        </Button>
+        <Button class="ml-2" @click="handleCancel">انصراف</Button>
       </FormItem>
     </Form>
-  </Modal>
+  </Card>
 </template>
 
 <script setup lang="ts">
 import type { CreateProduct, UpdateProduct, Product } from '@/models/product.model'
 import { useCategoryStore } from '@/stores/category.store'
 import { useTagStore } from '@/stores/tag.store'
+import { useProductStore } from '@/stores/product.store'
 import {
-  Modal,
+  Card,
   Form,
   FormItem,
   Input,
@@ -99,26 +114,23 @@ import {
   Switch,
   Row,
   Col,
+  Button,
+  message,
 } from 'ant-design-vue'
 import type { FormInstance, Rule } from 'ant-design-vue/es/form'
-import { ref, watch, computed, onMounted } from 'vue'
-import MediaInput from './MediaInput.vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import MediaInput from './components/MediaInput.vue'
 import { MediaType } from '@/models/media.model'
 
-const open = defineModel<boolean>('open', { required: true })
-const isLoading = defineModel<boolean>('isLoading', { required: true })
-
-const selectedProduct = defineModel<CreateProduct | UpdateProduct>('selectedProduct', {
-  required: true,
-})
-
-const emits = defineEmits<{
-  (e: 'submit'): void
-  (e: 'cancel'): void
-}>()
-
+const route = useRoute()
+const router = useRouter()
+const productStore = useProductStore()
 const categoryStore = useCategoryStore()
 const tagStore = useTagStore()
+
+const isEditMode = computed(() => !!route.params.id)
+const productId = computed(() => route.params.id as string)
 
 const formRef = ref<FormInstance>()
 
@@ -150,9 +162,7 @@ const rules: Record<string, Rule[]> = {
       },
     },
   ],
-  name: [
-    { required: true, message: 'نام محصول الزامی است', trigger: 'blur' },
-  ],
+  name: [{ required: true, message: 'نام محصول الزامی است', trigger: 'blur' }],
   slug: [
     { required: true, message: 'اسلاگ محصول الزامی است', trigger: 'blur' },
     {
@@ -172,26 +182,29 @@ const rules: Record<string, Rule[]> = {
   ],
   description: [
     {
-      min: 3,
-      message: 'توضیحات باید حداقل ۳ کاراکتر باشد',
+      validator: (_rule, value) => {
+        if (value && value.length > 0 && value.length < 3) {
+          return Promise.reject('توضیحات باید حداقل ۳ کاراکتر باشد')
+        }
+        return Promise.resolve()
+      },
       trigger: 'blur',
     },
   ],
 }
 
-const emptyProduct = (): CreateProduct | UpdateProduct =>
-  ({
-    name: '',
-    slug: '',
-    price: 0,
-    discountPrice: null,
-    description: '',
-    image: '',
-    stock: 0,
-    isActive: true,
-    tagIds: [],
-    categoryIds: [],
-  }) as CreateProduct | UpdateProduct
+const emptyProduct = (): CreateProduct => ({
+  name: '',
+  slug: '',
+  price: 0,
+  discountPrice: null,
+  description: '',
+  image: '',
+  stock: 0,
+  isActive: true,
+  tagIds: [],
+  categoryIds: [],
+})
 
 const form = ref<CreateProduct | UpdateProduct>(emptyProduct())
 
@@ -204,56 +217,68 @@ const formImage = computed({
 })
 
 // Helper to extract IDs from product relations
-const extractIds = (product: CreateProduct | UpdateProduct): CreateProduct | UpdateProduct => {
-  const result = { ...product }
-  
-  // If editing an existing product, extract tag and category IDs
-  if ('id' in product) {
-    const fullProduct = product as unknown as Product
-    if (fullProduct.tags && !result.tagIds?.length) {
-      result.tagIds = fullProduct.tags.map((t) => t.id)
-    }
-    if (fullProduct.categories && !result.categoryIds?.length) {
-      result.categoryIds = fullProduct.categories.map((c) => c.id)
-    }
+const extractIds = (product: Product): CreateProduct | UpdateProduct => {
+  return {
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    price: product.price,
+    discountPrice: product.discountPrice,
+    description: product.description || '',
+    image: product.image,
+    stock: product.stock,
+    isActive: product.isActive,
+    tagIds: product.tags?.map((t) => t.id) || [],
+    categoryIds: product.categories?.map((c) => c.id) || [],
   }
-  
-  return result
 }
 
-watch(
-  selectedProduct,
-  (value) => {
-    const extracted = extractIds(value)
-    form.value = { ...emptyProduct(), ...extracted }
-    formRef.value?.clearValidate()
-  },
-  { immediate: true },
-)
+const loadProduct = async () => {
+  if (isEditMode.value && productId.value) {
+    try {
+      const product = await productStore.getProduct(productId.value)
+      if (product) {
+        form.value = extractIds(product)
+      }
+    } catch (error) {
+      console.error('Failed to load product:', error)
+      message.error('خطا در بارگذاری محصول')
+    }
+  }
+}
 
-const handleOk = async () => {
+const handleSubmit = async () => {
   try {
     await formRef.value?.validate()
-    selectedProduct.value = { ...form.value }
-    emits('submit')
+
+    if (isEditMode.value) {
+      await productStore.updateProduct(form.value as UpdateProduct)
+      message.success('محصول با موفقیت ویرایش شد')
+    } else {
+      await productStore.createProduct(form.value as CreateProduct)
+      message.success('محصول با موفقیت ثبت شد')
+    }
+
+    router.push({ name: 'TheProductList' })
   } catch (error) {
-    console.error('Form validation failed:', error)
+    console.error('Form validation or submission failed:', error)
   }
 }
 
 const handleCancel = () => {
-  form.value = emptyProduct()
-  formRef.value?.clearValidate()
-  emits('cancel')
+  router.push({ name: 'TheProductList' })
 }
 
-onMounted(() => {
+onMounted(async () => {
   // Load categories and tags if not already loaded
   if (!categoryStore.categories.length) {
-    categoryStore.getCategories()
+    await categoryStore.getCategories()
   }
   if (!tagStore.tags.length) {
-    tagStore.getTags()
+    await tagStore.getTags()
   }
+
+  // Load product if editing
+  await loadProduct()
 })
 </script>

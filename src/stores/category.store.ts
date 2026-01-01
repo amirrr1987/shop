@@ -18,6 +18,16 @@ export const useCategoryStore = defineStore('category', () => {
     }
   }
 
+  const getCategory = async (categoryId: Category['id']) => {
+    loading.value = true
+    try {
+      const response = await categoryService.getCategory(categoryId)
+      return response
+    } finally {
+      loading.value = false
+    }
+  }
+
   const createCategory = async (category: CreateCategory) => {
     await categoryService.createCategory(category)
     await getCategories()
@@ -33,6 +43,6 @@ export const useCategoryStore = defineStore('category', () => {
     await getCategories()
   }
 
-  return { categories, loading, getCategories, createCategory, updateCategory, deleteCategory }
+  return { categories, loading, getCategories, getCategory, createCategory, updateCategory, deleteCategory }
 })
 

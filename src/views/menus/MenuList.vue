@@ -1,16 +1,5 @@
 <template>
   <Card title="منوها">
-    <template #extra>
-      <Button type="primary" @click="openCreate" :icon="h(PlusOutlined)">افزودن منو</Button>
-    </template>
-
-    <MenuForm
-      v-model:open="open"
-      v-model:selected-menu="selectedMenu"
-      @submit="handleSubmit"
-      @cancel="handleCancel"
-    />
-
     <Table
       :columns="columns"
       :dataSource="menuStore.menus"
@@ -34,57 +23,16 @@ import {
 import {
   DeleteOutlined,
   EditOutlined,
-  PlusOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
 } from '@ant-design/icons-vue'
-import { h, onMounted, ref } from 'vue'
-import MenuForm from './components/MenuForm.vue'
-import type { CreateMenu, Menu, UpdateMenu } from '@/models/menu.model'
+import { h, onMounted } from 'vue'
+import type { Menu } from '@/models/menu.model'
+import { useRouter } from 'vue-router'
 
 const menuStore = useMenuStore()
-const open = ref(false)
 
-const emptyMenu = (): CreateMenu | UpdateMenu =>
-  ({
-    title: '',
-    location: 'header',
-    link: null,
-    linkType: 'internal',
-    icon: null,
-    image: null,
-    sortOrder: 0,
-    isActive: true,
-    openInNewTab: false,
-    parentId: null,
-  }) as CreateMenu | UpdateMenu
-
-const selectedMenu = ref<CreateMenu | UpdateMenu>(emptyMenu())
-
-const openCreate = () => {
-  selectedMenu.value = emptyMenu()
-  open.value = true
-}
-
-const handleCancel = () => {
-  open.value = false
-  selectedMenu.value = emptyMenu()
-}
-
-const handleSubmit = async () => {
-  const payload = selectedMenu.value
-
-  if ('id' in payload && payload.id) {
-    await menuStore.updateMenu(payload as UpdateMenu)
-    message.success('منو با موفقیت ویرایش شد')
-  } else {
-    await menuStore.createMenu(payload as CreateMenu)
-    message.success('منو با موفقیت ایجاد شد')
-  }
-
-  open.value = false
-  selectedMenu.value = emptyMenu()
-}
+const router = useRouter()
 
 const getParentName = (parentId: string | null | undefined): string => {
   if (!parentId) return '-'
@@ -145,8 +93,7 @@ const columns: TableColumnType<Menu>[] = [
           class: 'flex! items-center justify-center',
           icon: h(EditOutlined),
           onClick: () => {
-            selectedMenu.value = { ...record }
-            open.value = true
+            router.push({ name: 'TheMenuEdit', params: { id: record.id } })
           },
         }),
         h(
@@ -178,4 +125,3 @@ onMounted(() => {
   menuStore.getMenus()
 })
 </script>
-

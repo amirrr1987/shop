@@ -6,6 +6,10 @@ export const useTagService = () => {
     const response = await axiosInstance.get('/tags')
     return response.data
   }
+  const getTag = async (tagId: Tag['id']) => {
+    const response = await axiosInstance.get(`/tags/${tagId}`)
+    return response.data
+  }
   const createTag = async (tag: CreateTag) => {
     const response = await axiosInstance.post('/tags', tag)
     return response.data
@@ -18,6 +22,6 @@ export const useTagService = () => {
     const response = await axiosInstance.delete(`/tags/${tagId}`)
     return response.data
   }
-  return { getTags, createTag, updateTag, deleteTag }
+  return { getTags, getTag, createTag, updateTag, deleteTag }
 }
 

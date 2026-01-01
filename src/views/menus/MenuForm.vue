@@ -1,12 +1,5 @@
 <template>
-  <Modal
-    v-model:open="open"
-    :title="'id' in selectedMenu ? 'ویرایش منو' : 'افزودن منو'"
-    @ok="handleOk"
-    @cancel="handleCancel"
-    destroyOnClose
-    width="600px"
-  >
+  <Card :title="isEditMode ? 'ویرایش منو' : 'افزودن منو'">
     <Form layout="vertical" :model="form" ref="formRef" :rules="rules">
       <Row :gutter="16">
         <Col :span="12">
@@ -70,28 +63,41 @@
       </Row>
 
       <Row :gutter="16">
-        <Col :span="8">
-          <div class="flex items-center gap-2">
-            <Switch v-model:checked="form.isActive" />
-            <span>فعال</span>
-          </div>
+        <Col :span="12">
+          <FormItem label="وضعیت" name="isActive">
+            <Switch
+              v-model:checked="form.isActive"
+              checked-children="فعال"
+              un-checked-children="غیرفعال"
+            />
+          </FormItem>
         </Col>
-        <Col :span="8">
-          <div class="flex items-center gap-2">
-            <Switch v-model:checked="form.openInNewTab" />
-            <span>باز شدن در تب جدید</span>
-          </div>
+        <Col :span="12">
+          <FormItem label="باز شدن در تب جدید" name="openInNewTab">
+            <Switch
+              v-model:checked="form.openInNewTab"
+              checked-children="بله"
+              un-checked-children="خیر"
+            />
+          </FormItem>
         </Col>
       </Row>
+
+      <Divider />
+      <Space>
+        <Button type="primary" :loading="menuStore.loading" @click="handleSubmit">
+          {{ isEditMode ? 'ذخیره تغییرات' : 'ایجاد منو' }}
+        </Button>
+        <Button @click="handleCancel">انصراف</Button>
+      </Space>
     </Form>
-  </Modal>
+  </Card>
 </template>
 
 <script setup lang="ts">
 import type { CreateMenu, UpdateMenu } from '@/models/menu.model'
 import { useMenuStore } from '@/stores/menu.store'
 import {
-  Modal,
   Form,
   FormItem,
   Input,
@@ -101,26 +107,28 @@ import {
   Switch,
   Row,
   Col,
+  Card,
+  Button,
+  Space,
+  Divider,
+  message,
 } from 'ant-design-vue'
 import type { FormInstance, Rule } from 'ant-design-vue/es/form'
-import { ref, watch, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-const open = defineModel<boolean>('open', { required: true })
-const selectedMenu = defineModel<CreateMenu | UpdateMenu>('selectedMenu', {
-  required: true,
-})
-
-const emits = defineEmits<{
-  (e: 'submit'): void
-  (e: 'cancel'): void
-}>()
-
+const route = useRoute()
+const router = useRouter()
 const menuStore = useMenuStore()
+
+const isEditMode = computed(() => !!route.params.id)
+const menuId = computed(() => route.params.id as string)
+
 const formRef = ref<FormInstance>()
 
 // Filter out current menu from parent options
 const parentOptions = computed(() => {
-  const currentId = 'id' in selectedMenu.value ? selectedMenu.value.id : null
+  const currentId = menuId.value
   return menuStore.menus
     .filter((m) => m.id !== currentId && m.location === form.value.location)
     .map((m) => ({
@@ -134,45 +142,87 @@ const rules: Record<string, Rule[]> = {
   location: [{ required: true, message: 'موقعیت منو الزامی است', trigger: 'blur' }],
 }
 
-const emptyMenu = (): CreateMenu | UpdateMenu =>
-  ({
-    title: '',
-    location: 'header',
-    link: null,
-    linkType: 'internal',
-    icon: null,
-    image: null,
-    sortOrder: 0,
-    isActive: true,
-    openInNewTab: false,
-    parentId: null,
-  }) as CreateMenu | UpdateMenu
+const emptyMenu = (): CreateMenu => ({
+  title: '',
+  location: 'header',
+  link: '',
+  linkType: 'internal',
+  icon: '',
+  image: '',
+  sortOrder: 0,
+  isActive: true,
+  openInNewTab: false,
+  parentId: undefined,
+})
 
 const form = ref<CreateMenu | UpdateMenu>(emptyMenu())
 
+// Update parent options when location changes
 watch(
-  selectedMenu,
-  (value) => {
-    form.value = { ...emptyMenu(), ...value }
-    formRef.value?.clearValidate()
+  () => form.value.location,
+  () => {
+    // Clear parentId if location changes and current parent is not in the new location
+    if (form.value.parentId) {
+      const parentExists = menuStore.menus.some(
+        (m) => m.id === form.value.parentId && m.location === form.value.location,
+      )
+      if (!parentExists) {
+        form.value.parentId = undefined
+      }
+    }
   },
-  { immediate: true },
 )
 
-const handleOk = async () => {
+const loadMenu = async () => {
+  if (isEditMode.value && menuId.value) {
+    try {
+      const menu = await menuStore.getMenu(menuId.value)
+      if (menu) {
+        form.value = {
+          id: menu.id,
+          title: menu.title,
+          location: menu.location,
+          link: menu.link || '',
+          linkType: menu.linkType as 'internal' | 'external' | 'category' | 'product',
+          icon: menu.icon || '',
+          image: menu.image || '',
+          sortOrder: menu.sortOrder,
+          isActive: menu.isActive,
+          openInNewTab: menu.openInNewTab,
+          parentId: menu.parentId || undefined,
+        } as UpdateMenu
+      }
+    } catch (error) {
+      console.error('Failed to load menu:', error)
+      message.error('خطا در بارگذاری منو')
+    }
+  }
+}
+
+const handleSubmit = async () => {
   try {
     await formRef.value?.validate()
-    selectedMenu.value = { ...form.value }
-    emits('submit')
+
+    if (isEditMode.value) {
+      await menuStore.updateMenu(form.value as UpdateMenu)
+      message.success('منو با موفقیت ویرایش شد')
+    } else {
+      await menuStore.createMenu(form.value as CreateMenu)
+      message.success('منو با موفقیت ثبت شد')
+    }
+
+    router.push({ name: 'TheMenuList' })
   } catch (error) {
-    console.error('Form validation failed:', error)
+    console.error('Form validation or submission failed:', error)
   }
 }
 
 const handleCancel = () => {
-  form.value = emptyMenu()
-  formRef.value?.clearValidate()
-  emits('cancel')
+  router.push({ name: 'TheMenuList' })
 }
-</script>
 
+onMounted(async () => {
+  await menuStore.getMenus()
+  await loadMenu()
+})
+</script>

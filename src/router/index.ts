@@ -2,9 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import PanelLayout from '@/layouts/Panel/PanelLayout.vue'
 import ProductList from '@/views/products/ProductList.vue'
 import Dashboard from '@/views/Dashboard/Dashboard.vue'
-import TagList from '@/views/tags/TagList.vue'
 import CategoryList from '@/views/categories/CategoryList.vue'
-
 import MediaList from '@/views/media/MediaList.vue'
 import TheSetting from '@/views/settings/TheSetting.vue'
 import MenuList from '@/views/menus/MenuList.vue'
@@ -24,23 +22,88 @@ const router = createRouter({
         },
         {
           path: '/products',
-          component: ProductList,
-          name: 'TheProducts',
+          name: 'TheProduct',
+          children: [
+            {
+              path: '',
+              name: 'TheProductList',
+              component: () => import('@/views/products/ProductList.vue'),
+            },
+            {
+              path: 'create',
+              name: 'TheProductCreate',
+              component: () => import('@/views/products/ProductForm.vue'),
+            },
+            {
+              path: ':id',
+              name: 'TheProductEdit',
+              component: () => import('@/views/products/ProductForm.vue'),
+            },
+          ],
         },
         {
           path: '/tags',
-          component: TagList,
-          name: 'TheTags',
+          name: 'TheTag',
+          children: [
+            {
+              path: '',
+              name: 'TheTagList',
+              component: () => import('@/views/tags/TagList.vue'),
+            },
+            {
+              path: 'create',
+              name: 'TheTagCreate',
+              component: () => import('@/views/tags/TagForm.vue'),
+            },
+            {
+              path: ':id',
+              name: 'TheTagEdit',
+              component: () => import('@/views/tags/TagForm.vue'),
+            },
+          ],
         },
+
         {
           path: '/categories',
-          component: CategoryList,
-          name: 'TheCategories',
+          name: 'TheCategory',
+          children: [
+            {
+              path: '',
+              name: 'TheCategoryList',
+              component: () => import('@/views/categories/CategoryList.vue'),
+            },
+            {
+              path: 'create',
+              name: 'TheCategoryCreate',
+              component: () => import('@/views/categories/CategoryForm.vue'),
+            },
+            {
+              path: ':id',
+              name: 'TheCategoryEdit',
+              component: () => import('@/views/categories/CategoryForm.vue'),
+            },
+          ],
         },
         {
           path: '/menus',
-          component: MenuList,
-          name: 'TheMenus',
+          name: 'TheMenu',
+          children: [
+            {
+              path: '',
+              name: 'TheMenuList',
+              component: () => import('@/views/menus/MenuList.vue'),
+            },
+            {
+              path: 'create',
+              name: 'TheMenuCreate',
+              component: () => import('@/views/menus/MenuForm.vue'),
+            },
+            {
+              path: ':id',
+              name: 'TheMenuEdit',
+              component: () => import('@/views/menus/MenuForm.vue'),
+            },
+          ],
         },
         {
           path: '/settings',
@@ -52,8 +115,8 @@ const router = createRouter({
           component: MediaList,
           name: 'TheMedia',
         },
-      ]
-    }
+      ],
+    },
   ],
 })
 

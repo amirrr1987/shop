@@ -19,6 +19,16 @@ export const useMenuStore = defineStore('menu', () => {
     }
   }
 
+  const getMenu = async (menuId: Menu['id']) => {
+    loading.value = true
+    try {
+      const response = await menuService.getMenu(menuId)
+      return response
+    } finally {
+      loading.value = false
+    }
+  }
+
   const getLocations = async () => {
     const response = await menuService.getLocations()
     locations.value = Array.isArray(response) ? response : []
@@ -39,5 +49,5 @@ export const useMenuStore = defineStore('menu', () => {
     await getMenus()
   }
 
-  return { menus, locations, loading, getMenus, getLocations, createMenu, updateMenu, deleteMenu }
+  return { menus, locations, loading, getMenus, getMenu, getLocations, createMenu, updateMenu, deleteMenu }
 })

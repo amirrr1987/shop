@@ -1,22 +1,22 @@
 <template>
-  <Layout class="h-screen">
-    <LayoutHeader >
+  <Layout class="h-screen overflow-hidden">
+    <LayoutHeader class="flex items-center justify-between">
       <h1>Panel</h1>
+      <div class="flex items-center gap-2">
+        <Divider />
+        <PanelSettingDrawer />
+        <Divider />
+        <Button>
+          <template #icon>
+            <UserOutlined />
+          </template>
+        </Button>
+      </div>
     </LayoutHeader>
 
     <Layout>
-      <LayoutSider>
-        <Menu class="h-full!" v-model:selectedKeys="selectedKeys">
-          <MenuItem :icon="h(HomeOutlined)" key="TheDashboard"> داشبورد </MenuItem>
-          <MenuDivider />
-          <MenuItem :icon="h(ShoppingOutlined)" key="TheProducts"> محصولات </MenuItem>
-          <MenuItem :icon="h(TagOutlined)" key="TheTags"> تگ ها </MenuItem>
-          <MenuItem :icon="h(ShoppingOutlined)" key="TheCategories"> دسته بندی ها </MenuItem>
-          <MenuItem :icon="h(MenuOutlined)" key="TheMenus"> منوها </MenuItem>
-          <MenuDivider />
-          <MenuItem :icon="h(FileOutlined)" key="TheMedia"> رسانه ها </MenuItem>
-          <MenuItem :icon="h(SettingOutlined)" key="TheSettings"> تنظیمات </MenuItem>
-        </Menu>
+      <LayoutSider width="240">
+        <Menu v-model:selectedKeys="selectedKeys" :items="menuItems" mode="inline" />
       </LayoutSider>
       <LayoutContent class="p-4 overflow-y-auto">
         <RouterView />
@@ -25,24 +25,174 @@
   </Layout>
 </template>
 <script setup lang="ts">
-import { Layout, LayoutHeader, LayoutSider, LayoutContent, Menu, MenuItem, MenuDivider } from 'ant-design-vue'
-import { HomeOutlined, ShoppingOutlined, FileOutlined, TagOutlined, SettingOutlined, MenuOutlined } from '@ant-design/icons-vue'
+import {
+  Layout,
+  LayoutHeader,
+  LayoutSider,
+  LayoutContent,
+  Menu,
+  Divider,
+  Button,
+  type MenuProps,
+} from 'ant-design-vue'
+import {
+  HomeOutlined,
+  ShoppingOutlined,
+  UserOutlined,
+  UnorderedListOutlined,
+  PlusOutlined,
+  MenuOutlined,
+  TagOutlined,
+  FileOutlined,
+  SettingOutlined,
+} from '@ant-design/icons-vue'
 import { RouterView, useRouter } from 'vue-router'
 import { h, onMounted, ref, watch } from 'vue'
+import PanelSettingDrawer from './PanelSettingDrawer.vue'
 
 const selectedKeys = ref<string[]>([])
-
-const router = useRouter()
-onMounted(() => {
-  selectedKeys.value = [router.currentRoute.value.name as string]
-})
-watch(
-  selectedKeys,
-  (newKeys) => {
-    if (newKeys.length > 0) {
-      router.push({ name: newKeys[0] })
-    }
+const menuItems = ref<MenuProps['items']>([
+  {
+    key: 'TheDashboard',
+    icon: h(HomeOutlined),
+    label: 'داشبورد',
   },
-  { immediate: true },
+  {
+    type: 'divider',
+  },
+  {
+    key: 'TheProduct',
+    icon: h(ShoppingOutlined),
+    label: 'محصولات',
+    children: [
+      {
+        key: 'TheProductCreate',
+        icon: h(PlusOutlined),
+        label: 'ایجاد محصول',
+      },
+      {
+        key: 'TheProductList',
+        icon: h(UnorderedListOutlined),
+        label: 'لیست محصولات',
+      },
+    ],
+  },
+  {
+    type: 'divider',
+  },
+  {
+    key: 'TheTags',
+    icon: h(TagOutlined),
+    label: 'تگ ها',
+    children: [
+      {
+        key: 'TheTagCreate',
+        icon: h(PlusOutlined),
+        label: 'ایجاد تگ',
+      },
+      {
+        key: 'TheTagList',
+        icon: h(UnorderedListOutlined),
+        label: 'لیست تگ ها',
+      },
+    ],
+  },
+  {
+    type: 'divider',
+  },
+  {
+    key: 'TheCategory',
+    icon: h(ShoppingOutlined),
+    label: 'دسته بندی ها',
+    children: [
+      {
+        key: 'TheCategoryCreate',
+        icon: h(PlusOutlined),
+        label: 'ایجاد دسته بندی',
+      },
+      {
+        key: 'TheCategoryList',
+        icon: h(UnorderedListOutlined),
+        label: 'لیست دسته بندی ها',
+      },
+    ],
+  },
+  {
+    type: 'divider',
+  },
+  {
+    key: 'TheMenu',
+    icon: h(MenuOutlined),
+    label: 'منوها',
+    children: [
+      {
+        key: 'TheMenuCreate',
+        icon: h(PlusOutlined),
+        label: 'ایجاد منو',
+      },
+      {
+        key: 'TheMenuList',
+        icon: h(UnorderedListOutlined),
+        label: 'لیست منوها',
+      },
+    ],
+  },
+  {
+    type: 'divider',
+  },
+  {
+    key: 'TheMedia',
+    icon: h(FileOutlined),
+    label: 'رسانه ها',
+  },
+  {
+    type: 'divider',
+  },
+  {
+    key: 'TheSettings',
+    icon: h(SettingOutlined),
+    label: 'تنظیمات',
+  },
+])
+const router = useRouter()
+
+// Map route names to menu keys
+// const routeToMenuKey = (routeName: string | symbol | undefined): string => {
+//   if (!routeName || typeof routeName !== 'string') return 'TheDashboard'
+
+//   // Map Create/List routes to parent menu key
+//   if (routeName.includes('Product')) return 'TheProduct'
+//   if (routeName.includes('Tag')) return 'TheTags'
+//   if (routeName.includes('Categor')) return 'TheCategory'
+//   if (routeName.includes('Menu')) return 'TheMenu'
+
+//   return routeName
+// }
+
+onMounted(() => {
+  const currentRouteName = router.currentRoute.value.name
+  selectedKeys.value = [currentRouteName as string]
+})
+
+watch(
+  () => router.currentRoute.value.name,
+  (newRouteName) => {
+    selectedKeys.value = [newRouteName as string]
+  },
 )
+
+watch(selectedKeys, (newKeys) => {
+  if (newKeys.length > 0) {
+    const key = newKeys[0]
+    if (!key) return
+    // Map menu keys to route names
+    // const routeMap: Record<string, string> = {
+    //   TheProduct: 'TheProductList',
+    //   TheTags: 'TheTagList',
+    //   TheCategory: 'TheCategoriesList',
+    //   TheMenu: 'TheMenusList',
+    // }
+    router.push({ name: key })
+  }
+})
 </script>

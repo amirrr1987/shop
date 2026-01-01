@@ -1,16 +1,5 @@
 <template>
   <Card title="دسته‌بندی‌ها">
-    <template #extra>
-      <Button type="primary" @click="openCreate" :icon="h(PlusOutlined)">افزودن دسته‌بندی</Button>
-    </template>
-
-    <CategoryForm
-      v-model:open="open"
-      v-model:selected-category="selectedCategory"
-      @submit="handleSubmit"
-      @cancel="handleCancel"
-    />
-
     <Table
       :columns="columns"
       :dataSource="categoryStore.categories"
@@ -32,74 +21,23 @@ import {
   message,
   Image,
 } from 'ant-design-vue'
-import { DeleteOutlined, EditOutlined, PlusOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons-vue'
-import { h, onMounted, ref } from 'vue'
-import CategoryForm from './components/CategoryForm.vue'
-import type { CreateCategory, Category, UpdateCategory } from '@/models/category.model'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+} from '@ant-design/icons-vue'
+import { h, onMounted } from 'vue'
+import type { Category } from '@/models/category.model'
 import dayjs from 'dayjs'
+import { useRouter } from 'vue-router'
 
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:5000'
 
 const categoryStore = useCategoryStore()
-const open = ref(false)
 
-const emptyCategory = (): CreateCategory | UpdateCategory => ({
-  name: '',
-  slug: '',
-  description: '',
-  image: null,
-  isActive: true,
-  sortOrder: 0,
-  parentId: null,
-}) as CreateCategory | UpdateCategory
-
-const selectedCategory = ref<CreateCategory | UpdateCategory>(emptyCategory())
-
-const openCreate = () => {
-  selectedCategory.value = emptyCategory()
-  open.value = true
-}
-
-const handleCancel = () => {
-  open.value = false
-  selectedCategory.value = emptyCategory()
-}
-
-const handleSubmit = async () => {
-  const payload = selectedCategory.value
-
-  if ('id' in payload && payload.id) {
-    message.loading('در حال ذخیره دسته‌بندی...')
-
-    await categoryStore.updateCategory({
-      id: payload.id,
-      name: payload.name,
-      slug: payload.slug,
-      description: payload.description,
-      image: payload.image,
-      isActive: payload.isActive,
-      sortOrder: payload.sortOrder,
-      parentId: payload.parentId,
-    })
-    message.success('دسته‌بندی با موفقیت ویرایش شد')
-  } else {
-    await categoryStore.createCategory({
-      name: payload.name!,
-      slug: payload.slug!,
-      description: payload.description,
-      image: payload.image,
-      isActive: payload.isActive ?? true,
-      sortOrder: payload.sortOrder ?? 0,
-      parentId: payload.parentId,
-    })
-    message.success('دسته‌بندی با موفقیت ایجاد شد')
-  }
-
-  open.value = false
-  selectedCategory.value = emptyCategory()
-}
-
+const router = useRouter()
 const getParentName = (parentId: string | null | undefined): string => {
   if (!parentId) return '-'
   const parent = categoryStore.categories.find((c) => c.id === parentId)
@@ -166,8 +104,7 @@ const columns: TableColumnType<Category>[] = [
           class: 'flex! items-center justify-center',
           icon: h(EditOutlined),
           onClick: () => {
-            selectedCategory.value = { ...record }
-            open.value = true
+            router.push({ name: 'TheCategoryEdit', params: { id: record.id } })
           },
         }),
         h(
