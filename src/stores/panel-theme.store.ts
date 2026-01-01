@@ -8,7 +8,7 @@ import type { AliasToken } from 'ant-design-vue/es/theme/internal'
 import type { OverrideToken } from 'ant-design-vue/es/theme/interface'
 import { theme } from 'ant-design-vue'
 import { theme as antTheme } from 'ant-design-vue/es'
-export const useThemeStore = defineStore('theme', () => {
+export const usePanelThemeStore = defineStore('panelTheme', () => {
   const { token: antToken } = antTheme.useToken()
   const componentSize = ref<SizeType>('middle')
   const locale = ref<Locale>(faIR)
@@ -23,16 +23,10 @@ export const useThemeStore = defineStore('theme', () => {
   }
 
   const token = ref<Partial<AliasToken>>({
-    colorPrimary: '#1677ff',
-    colorSuccess: '#52c41a',
-    colorWarning: '#faad14',
-    colorError: '#ff4d4f',
-    colorInfo: '#1677ff',
     fontFamily: 'var(--font-sans)',
+    colorPrimary: '#1677ff',
     borderRadius: 6,
-    borderRadiusSM: 4,
-    borderRadiusLG: 8,
-    borderRadiusXS: 2,
+    fontSize: 14,
   })
   const components = ref<OverrideToken>({
     Layout: {

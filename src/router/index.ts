@@ -1,11 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import PanelLayout from '@/layouts/Panel/PanelLayout.vue'
-import ProductList from '@/views/products/ProductList.vue'
 import Dashboard from '@/views/Dashboard/Dashboard.vue'
-import CategoryList from '@/views/categories/CategoryList.vue'
-import MediaList from '@/views/media/MediaList.vue'
-import TheSetting from '@/views/settings/TheSetting.vue'
-import MenuList from '@/views/menus/MenuList.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -107,13 +103,24 @@ const router = createRouter({
         },
         {
           path: '/settings',
-          component: TheSetting,
-          name: 'TheSettings',
+          name: 'TheSetting',
+          children: [
+            {
+              path: 'panel',
+              name: 'ThePanelSetting',
+              component: () => import('@/views/settings/ThePanelSetting.vue'),
+            },
+            {
+              path: 'shop',
+              name: 'TheShopSetting',
+              component: () => import('@/views/settings/TheShopSetting.vue'),
+            },
+          ],
         },
         {
           path: '/media',
-          component: MediaList,
           name: 'TheMedia',
+          component: () => import('@/views/media/MediaList.vue'),
         },
       ],
     },

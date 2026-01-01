@@ -3,14 +3,37 @@
     <LayoutHeader class="flex items-center justify-between">
       <h1>Panel</h1>
       <div class="flex items-center gap-2">
-        <Divider />
-        <PanelSettingDrawer />
-        <Divider />
-        <Button>
-          <template #icon>
-            <UserOutlined />
+        <Divider type="vertical" />
+
+        <Dropdown>
+          <Button type="link" class="ant-dropdown-link" @click.prevent>
+            <template #icon>
+              <UserOutlined />
+            </template>
+          </Button>
+          <template #overlay>
+            <Menu>
+              <MenuItem key="profile">
+                <template #icon>
+                  <UserOutlined />
+                </template>
+                پروفایل
+              </MenuItem>
+              <MenuItem key="change-password">
+                <template #icon>
+                  <LockOutlined />
+                </template>
+                تغییر رمز عبور
+              </MenuItem>
+              <MenuItem key="logout" danger>
+                <template #icon>
+                  <LogoutOutlined />
+                </template>
+                خروج
+              </MenuItem>
+            </Menu>
           </template>
-        </Button>
+        </Dropdown>
       </div>
     </LayoutHeader>
 
@@ -33,6 +56,8 @@ import {
   Menu,
   Divider,
   Button,
+  Dropdown,
+  MenuItem,
   type MenuProps,
 } from 'ant-design-vue'
 import {
@@ -45,10 +70,11 @@ import {
   TagOutlined,
   FileOutlined,
   SettingOutlined,
+  LogoutOutlined,
+  LockOutlined,
 } from '@ant-design/icons-vue'
 import { RouterView, useRouter } from 'vue-router'
 import { h, onMounted, ref, watch } from 'vue'
-import PanelSettingDrawer from './PanelSettingDrawer.vue'
 
 const selectedKeys = ref<string[]>([])
 const menuItems = ref<MenuProps['items']>([
@@ -149,9 +175,21 @@ const menuItems = ref<MenuProps['items']>([
     type: 'divider',
   },
   {
-    key: 'TheSettings',
+    key: 'TheSetting',
     icon: h(SettingOutlined),
     label: 'تنظیمات',
+    children: [
+      {
+        key: 'TheShopSetting',
+        icon: h(SettingOutlined),
+        label: 'تنظیمات فروشگاه',
+      },
+      {
+        key: 'ThePanelSetting',
+        icon: h(SettingOutlined),
+        label: 'تنظیمات پنل',
+      },
+    ],
   },
 ])
 const router = useRouter()
