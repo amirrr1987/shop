@@ -38,7 +38,6 @@ const API_BASE =
 const productStore = useProductStore()
 const router = useRouter()
 
-
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('fa-IR').format(price)
 }
@@ -47,8 +46,6 @@ const columns: TableColumnType<Product>[] = [
   {
     title: 'تصویر',
     dataIndex: 'image',
-    width: 80,
-    fixed: 'left',
     customRender: ({ text }) =>
       text
         ? h(Image, {
@@ -62,18 +59,15 @@ const columns: TableColumnType<Product>[] = [
   {
     title: 'نام',
     dataIndex: 'name',
-    width: 200,
   },
   {
     title: 'اسلاگ',
     dataIndex: 'slug',
-    width: 150,
     customRender: ({ text }) => h('code', { class: 'bg-gray-100 px-2 py-1 rounded text-xs' }, text),
   },
   {
     title: 'قیمت',
     dataIndex: 'price',
-    width: 120,
     customRender: ({ record }) => {
       const hasDiscount = record.discountPrice && record.discountPrice < record.price
       return h('div', { class: 'flex flex-col' }, [
@@ -95,14 +89,12 @@ const columns: TableColumnType<Product>[] = [
   {
     title: 'موجودی',
     dataIndex: 'stock',
-    width: 80,
     customRender: ({ text }) =>
       h(AntTag, { color: text > 0 ? 'success' : 'error' }, () => (text > 0 ? text : 'ناموجود')),
   },
   {
     title: 'دسته‌بندی‌ها',
     dataIndex: 'categories',
-    width: 180,
     customRender: ({ record }) =>
       record.categories?.length
         ? h(
@@ -117,7 +109,6 @@ const columns: TableColumnType<Product>[] = [
   {
     title: 'تگ‌ها',
     dataIndex: 'tags',
-    width: 180,
     customRender: ({ record }) =>
       record.tags?.length
         ? h(
@@ -130,7 +121,6 @@ const columns: TableColumnType<Product>[] = [
   {
     title: 'وضعیت',
     dataIndex: 'isActive',
-    width: 100,
     customRender: ({ text }) =>
       text
         ? h(AntTag, { color: 'success', icon: h(CheckCircleOutlined) }, () => 'فعال')
@@ -139,14 +129,11 @@ const columns: TableColumnType<Product>[] = [
   {
     title: 'تاریخ ایجاد',
     dataIndex: 'createdAt',
-    width: 110,
     customRender: ({ text }) => dayjs(text).format('YYYY/MM/DD'),
   },
   {
     title: 'عملیات',
     key: 'actions',
-    width: 120,
-    fixed: 'right',
     customRender: ({ record }) =>
       h('div', { class: 'flex gap-2' }, [
         h(Button, {
