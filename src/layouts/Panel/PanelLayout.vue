@@ -107,6 +107,23 @@ const menuItems = ref<MenuProps['items']>([
     type: 'divider',
   },
   {
+    key: 'TheCustomer',
+    icon: h(UserOutlined),
+    label: 'مشتریان',
+    children: [
+      {
+        key: 'TheCustomerCreate',
+        icon: h(PlusOutlined),
+        label: 'ایجاد مشتری',
+      },
+      {
+        key: 'TheCustomerList',
+        icon: h(UnorderedListOutlined),
+        label: 'لیست مشتریان',
+      },
+    ],
+  },
+  {
     key: 'TheTags',
     icon: h(TagOutlined),
     label: 'تگ ها',

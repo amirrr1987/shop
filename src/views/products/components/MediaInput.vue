@@ -146,6 +146,7 @@ import {
   InputSearch,
   Select,
   SelectOption,
+  Upload,
 } from 'ant-design-vue'
 import {
   PictureOutlined,
@@ -279,8 +280,6 @@ const handlePageChange = (page: number) => {
   fetchMedia()
 }
 
-
-
 // Load selected media if modelValue is provided
 watch(
   () => props.modelValue,
@@ -332,7 +331,7 @@ watch(
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
+  /* background: #f5f5f5; */
   gap: 8px;
 }
 
@@ -377,7 +376,7 @@ watch(
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
-  background: #fafafa;
+  /* background: #fafafa; */
 }
 
 .empty-state:hover {
@@ -448,7 +447,7 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
+  /* background: #f5f5f5; */
   overflow: hidden;
 }
 

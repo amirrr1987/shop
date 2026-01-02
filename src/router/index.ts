@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import PanelLayout from '@/layouts/Panel/PanelLayout.vue'
 import Dashboard from '@/views/Dashboard/Dashboard.vue'
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -98,6 +97,27 @@ const router = createRouter({
               path: ':id',
               name: 'TheMenuEdit',
               component: () => import('@/views/menus/MenuForm.vue'),
+            },
+          ],
+        },
+        {
+          path: '/customers',
+          name: 'TheCustomer',
+          children: [
+            {
+              path: '',
+              name: 'TheCustomerList',
+              component: () => import('@/views/customers/CustomerList.vue'),
+            },
+            {
+              path: 'create',
+              name: 'TheCustomerCreate',
+              component: () => import('@/views/customers/CustomerForm.vue'),
+            },
+            {
+              path: ':id',
+              name: 'TheCustomerEdit',
+              component: () => import('@/views/customers/CustomerForm.vue'),
             },
           ],
         },

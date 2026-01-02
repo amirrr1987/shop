@@ -2,9 +2,6 @@
   <Card :title="isEditMode ? 'ویرایش محصول' : 'افزودن محصول'">
     <Form layout="vertical" :model="form" ref="formRef" :rules="rules">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormItem label="تصویر" name="image" required>
-          <MediaInput v-model="formImage" :accept="[MediaType.IMAGE]" />
-        </FormItem>
         <div class="grid grid-cols-2 md:grid-cols-12 gap-4">
           <FormItem label="نام" name="name" required class="col-span-6">
             <Input v-model:value="form.name" placeholder="نام محصول" />
@@ -67,13 +64,16 @@
             />
           </FormItem>
 
-          <Space class="col-span-12">
-            <Button type="primary" :loading="productStore.loading" @click="handleSubmit">
+          <Space class="col-span-12 justify-end">
+            <Button type="primary" :loading="isLoading" @click="handleSubmit">
               {{ isEditMode ? 'ذخیره تغییرات' : 'ایجاد محصول' }}
             </Button>
             <Button class="ml-2" @click="handleCancel">انصراف</Button>
           </Space>
         </div>
+        <FormItem label="تصویر" name="image" required>
+          <MediaInput v-model="formImage" :accept="[MediaType.IMAGE]" />
+        </FormItem>
       </div>
     </Form>
   </Card>
@@ -93,8 +93,6 @@ import {
   Textarea,
   Select,
   Switch,
-  Row,
-  Col,
   Button,
   message,
   Space,
@@ -228,22 +226,28 @@ const loadProduct = async () => {
     }
   }
 }
-
+const isLoading = ref(false)
 const handleSubmit = async () => {
   try {
     await formRef.value?.validate()
-
+    isLoading.value = true
+    message.loading('در حال ثبت محصول...')
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     if (isEditMode.value) {
       await productStore.updateProduct(form.value as UpdateProduct)
+      message.destroy()
       message.success('محصول با موفقیت ویرایش شد')
     } else {
       await productStore.createProduct(form.value as CreateProduct)
+      message.destroy()
       message.success('محصول با موفقیت ثبت شد')
     }
 
     router.push({ name: 'TheProductList' })
   } catch (error) {
     console.error('Form validation or submission failed:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 

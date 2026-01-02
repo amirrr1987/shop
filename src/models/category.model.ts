@@ -7,23 +7,23 @@ export const createCategorySchema = z.object({
   image: z.string().max(500).optional(),
   isActive: z.boolean().default(true),
   sortOrder: z.number().int().min(0).default(0),
-  parentId: z.string().uuid().optional(),
+  parentId: z.uuid().optional(),
 })
 
 export const updateCategorySchema = createCategorySchema.partial().extend({
-  id: z.string().uuid(),
+  id: z.uuid(),
 })
 
 // Base category schema without recursive relations
 const baseCategorySchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   name: z.string(),
   slug: z.string(),
   description: z.string().optional(),
   image: z.string().optional(),
   isActive: z.boolean(),
   sortOrder: z.number(),
-  parentId: z.string().uuid().optional(),
+  parentId: z.uuid().optional(),
   createdAt: z.string().or(z.date()),
   updatedAt: z.string().or(z.date()),
 })
