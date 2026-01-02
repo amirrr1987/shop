@@ -38,7 +38,7 @@
     </LayoutHeader>
 
     <Layout>
-      <LayoutSider width="240">
+      <LayoutSider width="240" collapsible>
         <Menu v-model:selectedKeys="selectedKeys" :items="menuItems" mode="inline" />
       </LayoutSider>
       <LayoutContent class="p-4 overflow-y-auto">

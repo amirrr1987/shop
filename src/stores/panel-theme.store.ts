@@ -33,6 +33,9 @@ export const usePanelThemeStore = defineStore('panelTheme', () => {
       get colorBgHeader() {
         return antToken.value.colorBgContainer
       },
+      get colorBgTrigger() {
+        return token.value.colorPrimary
+      },
     },
   })
   const algorithm = ref<MappingAlgorithm[]>([])
