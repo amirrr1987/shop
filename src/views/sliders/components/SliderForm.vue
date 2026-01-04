@@ -34,7 +34,11 @@
         </Col>
         <Col :span="12">
           <FormItem label="تصویر موبایل" name="imageMobile">
-            <Input v-model:value="form.imageMobile" placeholder="آدرس تصویر موبایل (اختیاری)" dir="ltr" />
+            <Input
+              v-model:value="form.imageMobile"
+              placeholder="آدرس تصویر موبایل (اختیاری)"
+              dir="ltr"
+            />
           </FormItem>
         </Col>
       </Row>
@@ -67,7 +71,11 @@
         <Col :span="6">
           <FormItem label="رنگ دکمه">
             <div class="flex items-center gap-2">
-              <input type="color" v-model="form.buttonColor" class="w-8 h-8 rounded cursor-pointer" />
+              <input
+                type="color"
+                v-model="form.buttonColor"
+                class="w-8 h-8 rounded cursor-pointer"
+              />
               <Input v-model:value="form.buttonColor" dir="ltr" />
             </div>
           </FormItem>
@@ -101,7 +109,11 @@
         </Col>
         <Col :span="6">
           <FormItem label="وضعیت">
-            <Switch v-model:checked="form.isActive" checked-children="فعال" un-checked-children="غیرفعال" />
+            <Switch
+              v-model:checked="form.isActive"
+              checked-children="فعال"
+              un-checked-children="غیرفعال"
+            />
           </FormItem>
         </Col>
         <Col :span="6">
@@ -157,23 +169,24 @@ const rules: Record<string, Rule[]> = {
   image: [{ required: true, message: 'تصویر اسلایدر الزامی است', trigger: 'blur' }],
 }
 
-const emptySlider = (): CreateSlider | UpdateSlider => ({
-  title: '',
-  position: 'home',
-  image: '',
-  imageMobile: null,
-  link: null,
-  subtitle: null,
-  description: null,
-  buttonText: null,
-  buttonColor: '#3b82f6',
-  textColor: '#ffffff',
-  textAlign: 'center',
-  sortOrder: 0,
-  isActive: true,
-  startDate: null,
-  endDate: null,
-}) as CreateSlider | UpdateSlider
+const emptySlider = (): CreateSlider | UpdateSlider =>
+  ({
+    title: '',
+    position: 'home',
+    image: '',
+    imageMobile: null,
+    link: null,
+    subtitle: null,
+    description: null,
+    buttonText: null,
+    buttonColor: '#3b82f6',
+    textColor: '#ffffff',
+    textAlign: 'center',
+    sortOrder: 0,
+    isActive: true,
+    startDate: null,
+    endDate: null,
+  }) as CreateSlider | UpdateSlider
 
 const form = ref<CreateSlider | UpdateSlider>(emptySlider())
 
@@ -216,4 +229,3 @@ const handleCancel = () => {
   emits('cancel')
 }
 </script>
-
