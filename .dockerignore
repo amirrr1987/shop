@@ -1,0 +1,16 @@
+node_modules
+**/node_modules
+.git
+.nuxt
+**/.nuxt
+.output
+**/dist
+**/coverage
+*.log
+.env
+**/.env
+!.env.example
+web/theme
+web/theme-fa
+**/pnpm-store
+.cursor

@@ -1,0 +1,135 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: shop-postgres
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${SHOP_DB_USER}
+      POSTGRES_PASSWORD: ${SHOP_DB_PASS}
+      POSTGRES_DB: ${SHOP_DB_NAME}
+    ports:
+      - "${SHOP_DB_PORT}:5432"
+    volumes:
+      - shop_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SHOP_DB_USER} -d ${SHOP_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: shop-redis
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${SHOP_REDIS_PORT}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: shop-pgadmin
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${SHOP_PGADMIN_ADMIN}@example.com
+      PGADMIN_DEFAULT_PASSWORD: ${SHOP_PGADMIN_PASS}
+      PGADMIN_LISTEN_PORT: ${SHOP_PGADMIN_PORT}
+    ports:
+      - "${SHOP_PGADMIN_PORT}:${SHOP_PGADMIN_PORT}"
+    volumes:
+      - shop_pgadmin_data:/var/lib/pgadmin
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: shop-api
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${SHOP_ENV}
+      SHOP_DB_HOST: postgres
+      SHOP_DB_PORT: 5432
+      SHOP_REDIS_HOST: redis
+      SHOP_REDIS_PORT: 6379
+    ports:
+      - "${SHOP_API_PORT}:${SHOP_API_PORT}"
+    volumes:
+      - ./api/src:/app/api/src
+      - ./packages/shared:/app/packages/shared
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    container_name: shop-web
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - api
+    environment:
+      SHOP_WEB_HOST: 0.0.0.0
+    ports:
+      - "${SHOP_WEB_PORT}:${SHOP_WEB_PORT}"
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./web/app:/app/web/app
+      - ./web/public:/app/web/public
+      - ./web/nuxt.config.ts:/app/web/nuxt.config.ts
+      - ./packages/shared:/app/packages/shared
+
+  panel:
+    build:
+      context: .
+      dockerfile: panel/Dockerfile
+    container_name: shop-panel
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - api
+    environment:
+      SHOP_PANEL_HOST: 0.0.0.0
+    ports:
+      - "${SHOP_PANEL_PORT}:${SHOP_PANEL_PORT}"
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./panel/src:/app/panel/src
+      - ./panel/index.html:/app/panel/index.html
+      - ./panel/vite.config.ts:/app/panel/vite.config.ts
+      - ./packages/shared:/app/packages/shared
+
+  # Bruno GUI داخل Docker نیست (اپ دسکتاپ است).
+  # این سرویس فقط smoke تست کالکشن را با CLI اجرا می‌کند:
+  #   docker compose --profile bruno run --rm bruno
+  bruno:
+    image: node:24-alpine
+    container_name: shop-bruno
+    profiles: ["bruno"]
+    working_dir: /collection
+    volumes:
+      - ./bruno:/collection
+    depends_on:
+      - api
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        npm i -g @usebruno/cli@1.38.0
+        bru run health --env docker || true
+
+volumes:
+  shop_pg_data:
+  shop_pgadmin_data:
