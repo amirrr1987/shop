@@ -1,138 +1,42 @@
+<script setup lang="ts">
+const { items } = useWishlist()
+
+useSeoMeta({ title: 'علاقه‌مندی‌ها — روزر' })
+</script>
+
 <template>
-    <div class="page-content">
-        <!-- Breadcrumb Area Start -->
-        <div class="breadcrumb-area">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="breadcrumb-content">
-                            <ul class="nav">
-                                <li>
-                                    <RouterLink to="/">صفحه اصلی</RouterLink>
-                                </li>
-                                <li>علاقه مندی ها</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <UContainer class="py-6 sm:py-8">
+    <UPage>
+      <UPageBody
+        :ui="{
+          base: 'mt-0 space-y-6 pb-8 sm:space-y-8 sm:pb-10'
+        }"
+      >
+        <div class="space-y-6 sm:space-y-8">
+          <UBreadcrumb
+            :items="[
+              { label: 'خانه', to: '/' },
+              { label: 'علاقه‌مندی‌ها', to: '/wishlist' }
+            ]"
+            :ui="{ link: 'text-sm text-muted transition-colors hover:text-default' }"
+          />
+
+          <UPageHeader
+            headline="ذخیره‌شده"
+            title="علاقه‌مندی‌ها"
+            :description="items.length
+              ? `${items.length.toLocaleString('fa-IR')} محصول در لیست شما`
+              : 'محصولاتی که دوست دارید را اینجا ذخیره کنید.'"
+            :ui="{
+              root: 'border-b border-default pb-6',
+              title: 'text-2xl sm:text-3xl',
+              description: 'text-base text-muted'
+            }"
+          />
+
+          <WishlistTable />
         </div>
-        <!-- Breadcrumb Area End-->
-        <!-- Wishlist area start -->
-        <div class="cart-main-area mtb-60px">
-            <div class="container">
-                <h3 class="cart-page-title">لیست علاقه مندی ها</h3>
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                        <form action="#">
-                            <div class="table-content table-responsive cart-table-content">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>تصویر</th>
-                                            <th>نام محصول</th>
-                                            <th>قیمت</th>
-                                            <th>تعداد</th>
-                                            <th>جمع</th>
-                                            <th>افزودن به سبد خرید</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="product-thumbnail">
-                                                <RouterLink to="#"><img
-                                                        class="img-responsive"
-                                                        src="/assets/images/product-image/2-1.jpg"
-                                                        alt=""
-                                                    /></RouterLink>
-                                            </td>
-                                            <td class="product-name">
-                                                <RouterLink to="#">عنوان محصول
-                                                </RouterLink>
-                                            </td>
-                                            <td class="product-price-cart"><span
-                                                    class="amount">50.000 تومان</span></td>
-                                            <td class="product-quantity">
-                                                <div class="cart-plus-minus">
-                                                    <input
-                                                        class="cart-plus-minus-box"
-                                                        type="text"
-                                                        name="qtybutton"
-                                                        value="1"
-                                                    />
-                                                </div>
-                                            </td>
-                                            <td class="product-subtotal">50.000 تومان</td>
-                                            <td class="product-wishlist-cart">
-                                                <RouterLink to="#">افزودن به سبد خرید</RouterLink>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="product-thumbnail">
-                                                <RouterLink to="#"><img
-                                                        class="img-responsive"
-                                                        src="/assets/images/product-image/2-2.jpg"
-                                                        alt=""
-                                                    /></RouterLink>
-                                            </td>
-                                            <td class="product-name">
-                                                <RouterLink to="#">عنوان محصول
-                                                </RouterLink>
-                                            </td>
-                                            <td class="product-price-cart"><span
-                                                    class="amount">50.000 تومان</span></td>
-                                            <td class="product-quantity">
-                                                <div class="cart-plus-minus">
-                                                    <input
-                                                        class="cart-plus-minus-box"
-                                                        type="text"
-                                                        name="qtybutton"
-                                                        value="1"
-                                                    />
-                                                </div>
-                                            </td>
-                                            <td class="product-subtotal">50.000 تومان</td>
-                                            <td class="product-wishlist-cart">
-                                                <RouterLink to="#">افزودن به سبد خرید</RouterLink>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="product-thumbnail">
-                                                <RouterLink to="#"><img
-                                                        class="img-responsive"
-                                                        src="/assets/images/product-image/2-3.jpg"
-                                                        alt=""
-                                                    /></RouterLink>
-                                            </td>
-                                            <td class="product-name">
-                                                <RouterLink to="#">عنوان محصول
-                                                </RouterLink>
-                                            </td>
-                                            <td class="product-price-cart"><span
-                                                    class="amount">50.000 تومان</span></td>
-                                            <td class="product-quantity">
-                                                <div class="cart-plus-minus">
-                                                    <input
-                                                        class="cart-plus-minus-box"
-                                                        type="text"
-                                                        name="qtybutton"
-                                                        value="1"
-                                                    />
-                                                </div>
-                                            </td>
-                                            <td class="product-subtotal">50.000 تومان</td>
-                                            <td class="product-wishlist-cart">
-                                                <RouterLink to="#">افزودن به سبد خرید</RouterLink>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Wishlist area end -->
-    </div>
+      </UPageBody>
+    </UPage>
+  </UContainer>
 </template>

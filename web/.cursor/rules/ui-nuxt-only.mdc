@@ -1,0 +1,29 @@
+---
+description: UI styling — Nuxt UI :ui prop and Tailwind only; theme/ is not a reference
+globs: app/**/*.{vue,ts,css}
+alwaysApply: false
+---
+
+# UI styling (Nuxt UI + Tailwind)
+
+The `theme/` folder is **not** a design reference. Do not port markup, classes, or layout from theme HTML templates.
+
+## Allowed
+
+- Nuxt UI components (`UButton`, `UCard`, `UFooter`, …)
+- Component `:ui` prop for slot/variant overrides (see `.nuxt/ui/<component>.ts` for slot names)
+- Standard Tailwind CSS utility classes on elements
+- Semantic Nuxt UI colors (`text-default`, `bg-elevated`, `border-muted`, …)
+
+## Not allowed
+
+- Copying structure or styles from `theme/`
+- Custom CSS files or `<style>` blocks unless the user explicitly asks
+- Raw Tailwind palette colors when a semantic token exists (`text-gray-500` → prefer `text-muted`)
+- Inline styles or one-off design tokens outside Nuxt UI / Tailwind defaults
+
+## Workflow
+
+1. Compose with Nuxt UI primitives first.
+2. Tune appearance with `:ui` and Tailwind classes.
+3. Match brand/layout intent from product context, not from theme files.

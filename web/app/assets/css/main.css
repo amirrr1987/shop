@@ -1,0 +1,40 @@
+@import "./fonts.css";
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+html,
+body {
+  width: 100%;
+  overflow-x: clip;
+}
+
+body {
+  font-family: 'IranSans','Poppins', sans-serif;
+}
+
+swiper-container.hero-swiper,
+swiper-container.shop-swiper {
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  --swiper-navigation-size: 2rem;
+  --swiper-theme-color: var(--ui-color-primary-500, #0ea5e9);
+}
+
+swiper-container.hero-swiper {
+  --swiper-pagination-bottom: 1rem;
+}
+
+swiper-slide {
+  box-sizing: border-box;
+  height: auto;
+  width: 100%;
+}
+
+.vue-echarts-server,
+.vue-echarts {
+  max-width: 100%;
+  overflow: hidden;
+}

@@ -90,7 +90,6 @@ services:
       - ./web/app:/app/web/app
       - ./web/public:/app/web/public
       - ./web/nuxt.config.ts:/app/web/nuxt.config.ts
-      - ./packages/shared:/app/packages/shared
 
   panel:
     build:

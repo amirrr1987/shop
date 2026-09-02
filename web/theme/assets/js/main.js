@@ -52,12 +52,12 @@ $(function () {
             $ul.append(
                 $(
                     '<li class="expand">' +
-                        (isExpanded ? '<a href="javascript:;"><span><i class="ion-android-remove"></i>کمتر</span></a>' : '<a href="javascript:;"><span><i class="ion-android-add"></i>بیشتر</span></a>') +
+                        (isExpanded ? '<a href="javascript:;"><span><i class="ion-android-remove"></i>Close Categories</span></a>' : '<a href="javascript:;"><span><i class="ion-android-add"></i>More Categories</span></a>') +
                         "</li>"
                 ).click(function (event) {
                     var isExpanded = $ul.hasClass("expanded");
                     event.preventDefault();
-                    $(this).html(isExpanded ? '<a href="javascript:;"><span><i class="ion-android-add"></i>بیشتر</span></a>' : '<a href="javascript:;"><span><i class="ion-android-remove"></i>کمتر</span></a>');
+                    $(this).html(isExpanded ? '<a href="javascript:;"><span><i class="ion-android-add"></i>More Categories</span></a>' : '<a href="javascript:;"><span><i class="ion-android-remove"></i>Close Categories</span></a>');
                     $ul.toggleClass("expanded");
                     $lis.toggle(300);
                 })
@@ -473,8 +473,8 @@ $(function () {
     $("#more-btn").on("click", function (e) {
         e.preventDefault();
         $(".category-menu li.hidden").toggle(500);
-        var htmlAfter = '<i class="ion-ios-minus-empty" aria-hidden="true"></i> کمتر';
-        var htmlBefore = '<i class="ion-ios-plus-empty" aria-hidden="true"></i> بیشتر';
+        var htmlAfter = '<i class="ion-ios-minus-empty" aria-hidden="true"></i> Less Categories';
+        var htmlBefore = '<i class="ion-ios-plus-empty" aria-hidden="true"></i> More Categories';
 
         if ($(this).html() == htmlBefore) {
             $(this).html(htmlAfter);
@@ -490,7 +490,7 @@ $(function () {
         var $this = $(this),
             finalDate = $(this).data("countdown");
         $this.countdown(finalDate, function (event) {
-            $this.html(event.strftime('<span class="cdown second">%S <p>ثانیه</p></span> <span class="cdown minutes">%M <p>دقیقه</p></span> <span class="cdown hour">%-H <p>ساعت</p></span> <span class="cdown day">%-D <p>روز</p></span>'));
+            $this.html(event.strftime('<span class="cdown day">%-D <p>Days</p></span> <span class="cdown hour">%-H <p>Hours</p></span> <span class="cdown minutes">%M <p>Mins</p></span> <span class="cdown second">%S <p>Sec</p></span>'));
         });
     });
 
@@ -630,7 +630,7 @@ $(function () {
     });
 
     /*---------------------------
-        مشاهده سریع Slider 
+        Quick view Slider 
     ------------------------------ */
     var galleryThumbs = new Swiper('.gallery-thumbs', {
       spaceBetween: 10,
