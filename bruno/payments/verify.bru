@@ -1,0 +1,18 @@
+meta {
+  name: verify
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/payments/verify
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "authority": "MOCK-replace",
+    "status": "OK"
+  }
+}

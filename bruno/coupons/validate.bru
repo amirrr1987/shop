@@ -1,0 +1,18 @@
+meta {
+  name: validate
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/coupons/validate
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "code": "WELCOME10",
+    "subtotal": 1000000
+  }
+}

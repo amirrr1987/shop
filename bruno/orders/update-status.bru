@@ -1,0 +1,21 @@
+meta {
+  name: update-status
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/orders/:id/status
+  body: json
+  auth: none
+}
+
+params:path {
+  id: replace-with-order-id
+}
+
+body:json {
+  {
+    "status": "shipped"
+  }
+}

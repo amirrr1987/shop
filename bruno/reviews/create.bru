@@ -1,0 +1,19 @@
+meta {
+  name: create
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/reviews
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "productId": "replace-with-product-id",
+    "rating": 5,
+    "comment": "عالی بود"
+  }
+}

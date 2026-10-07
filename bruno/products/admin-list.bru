@@ -1,0 +1,17 @@
+meta {
+  name: admin-list
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/products/admin
+  body: none
+  auth: none
+}
+
+params:query {
+  page: 1
+  perPage: 20
+  sort: newest
+}

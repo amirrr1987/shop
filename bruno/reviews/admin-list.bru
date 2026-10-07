@@ -1,0 +1,18 @@
+meta {
+  name: admin-list
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/reviews/admin?page=1&perPage=20
+  body: none
+  auth: none
+}
+
+params:query {
+  page: 1
+  perPage: 20
+  ~productId: replace-with-product-id
+  ~rating: 5
+}

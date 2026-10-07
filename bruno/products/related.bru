@@ -1,0 +1,15 @@
+meta {
+  name: related
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/products/:slug/related
+  body: none
+  auth: none
+}
+
+params:path {
+  slug: wireless-earbuds
+}

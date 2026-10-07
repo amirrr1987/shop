@@ -1,0 +1,17 @@
+meta {
+  name: update-profile
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/auth/profile
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "fullName": "Shop Customer"
+  }
+}

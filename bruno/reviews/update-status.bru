@@ -1,0 +1,17 @@
+meta {
+  name: update-status
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/reviews/{{reviewId}}/status
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "status": "approved"
+  }
+}

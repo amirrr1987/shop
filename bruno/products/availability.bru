@@ -1,0 +1,19 @@
+meta {
+  name: availability
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/products/availability
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "productIds": [
+      "replace-with-product-id"
+    ]
+  }
+}

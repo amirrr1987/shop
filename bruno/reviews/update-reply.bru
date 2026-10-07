@@ -1,0 +1,17 @@
+meta {
+  name: update-reply
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/reviews/{{reviewId}}/reply
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "reply": "از بازخورد شما سپاسگزاریم"
+  }
+}

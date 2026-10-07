@@ -1,0 +1,20 @@
+meta {
+  name: list
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/products?page=1&perPage=20&sort=newest&minPrice=0&maxPrice=5000000&inStock=true
+  body: none
+  auth: none
+}
+
+params:query {
+  page: 1
+  perPage: 20
+  sort: newest
+  ~minPrice: 0
+  ~maxPrice: 5000000
+  ~inStock: true
+}

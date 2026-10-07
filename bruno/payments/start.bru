@@ -1,0 +1,11 @@
+meta {
+  name: start
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/payments/orders/{{orderId}}/start
+  body: none
+  auth: none
+}

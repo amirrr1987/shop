@@ -1,0 +1,15 @@
+meta {
+  name: cancel
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/orders/:id/cancel
+  body: none
+  auth: none
+}
+
+params:path {
+  id: replace-with-order-id
+}
