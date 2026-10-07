@@ -1,0 +1,14 @@
+---
+description: Admin panel conventions for apps/panel
+globs: apps/panel/**
+alwaysApply: false
+---
+
+# Panel (`apps/panel`)
+
+- Vue 3 + Vite + **ant-design-vue** + Pinia + TanStack Vue Query.
+- API client: `src/api/client.ts`; query keys in `src/api/query-keys.ts`.
+- Auth/session: `stores/auth.ts` + `useSessionJwt`; abilities via `ability.ts` / CASL.
+- Layout/nav: `layouts/AdminLayout.vue` — match existing menu and route style in `router/index.ts`.
+- Money/date helpers: `utils/format.ts`, `utils/date.ts`, `composables/useMoneyAmount.ts`.
+- Keep admin tables/forms consistent with neighboring views; no Nuxt UI here.

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "zarinpal-docs": {
+      "type": "http",
+      "url": "https://www.zarinpal.com/docs/mcp"
+    }
+  }
+}

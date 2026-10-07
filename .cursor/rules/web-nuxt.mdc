@@ -1,0 +1,14 @@
+---
+description: Nuxt storefront conventions for apps/web
+globs: apps/web/**
+alwaysApply: false
+---
+
+# Web (`apps/web`)
+
+- Nuxt 4 + `@nuxt/ui`. Prefer `U*` components and semantic tokens (`text-default`, `bg-elevated`, …).
+- Browser API base is same-origin `/api` (proxied to Nest). SSR uses `runtimeConfig.apiProxy`.
+- Auth/cart/wishlist/compare: existing composables under `app/composables/` — extend, don't duplicate.
+- Prices: use existing `format-price` / currency composables; amounts are rials from API.
+- Icons: Lucide via Nuxt Icon (`i-lucide-*`); icon API endpoint is `/_nuxt_icon` (not `/api/_nuxt_icon`).
+- For Nuxt UI prop/slot details use Nuxt UI MCP or `.cursor/skills/nuxt-ui` — don't guess APIs.

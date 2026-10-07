@@ -1,0 +1,15 @@
+---
+description: NestJS API conventions for apps/api
+globs: apps/api/**
+alwaysApply: false
+---
+
+# API (`apps/api`)
+
+- Nest + TypeORM + Zod (`nestjs-zod`). Shared DTOs/types live in `@shop/shared` when reused.
+- Money is **rials** (1 toman = 10 rials). Do not invent toman-only fields.
+- Payments: `PAYMENT_CALLBACK_URL` → API `/payments/callback`, then redirect `PAYMENT_RETURN_URL`. Docs: `docs/ZARINPAL_SANDBOX.md`.
+- Guest orders use `guestToken` / `guest_email`; always go through `assertOrderAccess`.
+- Schema changes = new migration under `src/database/migrations` + register in `migrations/index.ts`. No `synchronize: true` for prod paths.
+- Prefer existing patterns in nearby services/controllers; keep modules thin.
+- User runs CLI: `pnpm --filter @shop/api …` (migration, seed, test).

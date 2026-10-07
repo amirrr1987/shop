@@ -1,0 +1,56 @@
+# Dependencies & package managers
+node_modules/
+.pnpm-store/
+**/.pnp.*
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Build / framework caches
+.turbo/
+.nuxt/
+.nitro/
+.output/
+.data/
+.cache/
+dist/
+dist-ssr/
+build/
+out/
+.next/
+coverage/
+*.tsbuildinfo
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+!.env.docker.example
+apps/**/.env
+apps/**/.env.*
+!apps/**/.env.example
+
+# Local runtime data
+uploads/
+apps/api/uploads/
+backups/
+*.pem
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Media & binary (attach only when needed)
+**/*.{png,jpg,jpeg,gif,webp,ico,mp4,webm,pdf,zip,7z,rar}
+
+# Generated / maps
+**/*.map
+graphify-out/
+playwright-report/
+test-results/
+apps/web/.playwright/
+
+# Large planning dumps (open on demand)
+Plan.md
+docs/**/*.png
+docs/**/*.jpg

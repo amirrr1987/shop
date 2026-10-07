@@ -1,0 +1,13 @@
+---
+description: Lean agent workflow for this monorepo — shell, commits, scope
+alwaysApply: true
+---
+
+# Workflow
+
+- User runs every install/CLI command; give one `cmd.exe`/`Cmder` block, wait for paste-back.
+- Never PowerShell. Prefer: `cmd.exe /c "cd /d C:\Users\a-maghami\Desktop\shop && …"`
+- Commit/push/PR only when user asks.
+- Touch only files needed for the task; no drive-by refactors or unsolicited markdown.
+- Prefer `@` specific files over whole-repo scans.
+- New chat for unrelated tasks (history burns tokens).

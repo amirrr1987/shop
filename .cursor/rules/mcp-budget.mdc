@@ -1,0 +1,11 @@
+---
+description: Keep MCP lean — disable unused servers to save tokens
+alwaysApply: true
+---
+
+# MCP budget
+
+- Project MCP: only `zarinpal-docs` (payment docs). Use when touching Zarinpal/payments.
+- Nuxt UI MCP: only when building/editing `apps/web` UI components.
+- Turn **off** unused user MCPs (Google Calendar, Drive, Browser, Figma) when not needed — tool schemas burn tokens every turn.
+- Prefer reading a file over enabling a new MCP.

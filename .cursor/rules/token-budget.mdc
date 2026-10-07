@@ -1,0 +1,25 @@
+---
+description: Token budget and model routing — Ollama for trivial, strong models for hard work
+alwaysApply: true
+---
+
+# Token & models
+
+## Context hygiene
+- Do not load whole apps; open the few files you edit.
+- Do not dump MCP schemas into answers; call tools only when needed.
+- Keep answers short unless user asks for depth.
+- Prefer project skills/rules over re-explaining stack each turn.
+
+## Model routing (user picks in Cursor model picker)
+| Task | Prefer |
+|------|--------|
+| Rename, typo, explain 1 file, draft text | Ollama local (cheap/free) |
+| Small UI/API edit 1–3 files | Composer / Auto Cost–Balance |
+| Payments, auth, migrations, security, multi-file architecture | Frontier (Claude/GPT) — never Ollama alone |
+
+## Ollama (local)
+- Model in use: **`gemma3:1b`** (tiny — text/rename/explain only).
+- Base URL for Cursor BYOK: `http://127.0.0.1:11434/v1`
+- Setup steps: `.cursor/OLLAMA.md`
+- Never trust `gemma3:1b` alone for money, stock, JWT, guest tokens, Zarinpal, Nest services, or migrations.
