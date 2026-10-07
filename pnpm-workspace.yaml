@@ -1,12 +1,45 @@
 packages:
-  - "api"
-  - "web"
-  - "panel"
+  - "apps/*"
   - "packages/*"
 
+# pnpm ignores dependency lifecycle scripts unless they are listed here.
 allowBuilds:
-  "@scarf/scarf": true
+  '@scarf/scarf': true
   '@sentry/cli': true
+  bcrypt: true
+  core-js: true
   esbuild: true
-  unrs-resolver: true
+  sharp: true
   vue-demi: true
+
+# Panel's generator pinned Vue RC and the TypeScript native bridge.
+# Keep those pins on @shop/panel only, so web (Nuxt) and api (Nest) stay on their own versions.
+overrides:
+  "@shop/panel>vue": "rc"
+  "@shop/panel>@vue/compiler-core": "rc"
+  "@shop/panel>@vue/compiler-dom": "rc"
+  "@shop/panel>@vue/compiler-sfc": "rc"
+  "@shop/panel>@vue/compiler-ssr": "rc"
+  "@shop/panel>@vue/compiler-vapor": "rc"
+  "@shop/panel>@vue/reactivity": "rc"
+  "@shop/panel>@vue/runtime-core": "rc"
+  "@shop/panel>@vue/runtime-dom": "rc"
+  "@shop/panel>@vue/runtime-vapor": "rc"
+  "@shop/panel>@vue/server-renderer": "rc"
+  "@shop/panel>@vue/shared": "rc"
+  "@shop/panel>@vue/compat": "rc"
+  "@shop/panel>typescript": "npm:typescript-native-bridge@latest"
+
+peerDependencyRules:
+  allowAny:
+    - "vue"
+  # These ranges are stale upstream, not real incompatibilities.
+  # nestjs-zod@5.5.0 is the latest release and only declares Nest 11, but it
+  # only touches stable decorators/exceptions plus a lazy ApiResponse import.
+  # tsconfck just parses tsconfig.json and never calls the TypeScript compiler API.
+  allowedVersions:
+    "nestjs-zod>@nestjs/common": "12"
+    "nestjs-zod>@nestjs/swagger": "12"
+    "@sentry/nestjs>@nestjs/common": "12"
+    "@sentry/nestjs>@nestjs/core": "12"
+    "tsconfck>typescript": "6"

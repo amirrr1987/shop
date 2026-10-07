@@ -2,12 +2,21 @@
   "name": "shop",
   "private": true,
   "scripts": {
-    "dev:api": "pnpm --filter api start:dev",
-    "dev:web": "pnpm --filter web dev",
-    "dev:panel": "pnpm --filter panel dev",
-    "docker:up": "docker compose up -d --build",
-    "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f",
-    "docker:bruno": "docker compose --profile bruno run --rm bruno"
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "dev:api": "turbo run dev --filter=@shop/api",
+    "dev:panel": "turbo run dev --filter=@shop/panel",
+    "dev:web": "turbo run dev --filter=@shop/web",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "check-types": "turbo run check-types",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "turbo": "^2.11.6"
+  },
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22.18.0"
   }
 }
