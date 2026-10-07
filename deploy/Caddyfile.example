@@ -1,0 +1,20 @@
+# Example reverse proxy with automatic HTTPS (Caddy).
+# Point DNS A/AAAA records at the VPS, then:
+#   caddy run --config deploy/Caddyfile
+#
+# Assumes compose profile "app" publishes:
+#   web   :3000
+#   panel :5174
+#   api   :3001  (optional direct; prefer same-origin /api via web)
+
+shop.example.com {
+  encode gzip
+
+  # Storefront (Nuxt) — proxies /api and /uploads to API inside the app
+  reverse_proxy web:3000
+}
+
+panel.shop.example.com {
+  encode gzip
+  reverse_proxy panel:80
+}
