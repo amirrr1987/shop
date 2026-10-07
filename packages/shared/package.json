@@ -1,14 +1,20 @@
 {
   "name": "@shop/shared",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
-  "dependencies": {
-    "zod": "^4.4.3"
-  }
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch --preserveWatchOutput",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": { "zod": "^4.6.5" },
+  "devDependencies": { "typescript": "^6.0.2" }
 }
