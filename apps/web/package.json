@@ -1,0 +1,32 @@
+{
+  "name": "@shop/web",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:edge": "set E2E_BROWSER_CHANNEL=msedge&& playwright test"
+  },
+  "dependencies": {
+    "@fontsource/vazirmatn": "^5.2.8",
+    "@iconify-json/lucide": "^1.2.68",
+    "@nuxt/fonts": "^0.14.0",
+    "@nuxt/icon": "^2.5.1",
+    "@nuxt/ui": "^4.11.3",
+    "@nuxtjs/color-mode": "^4.0.1",
+    "@sentry/nuxt": "^10.38.0",
+    "@shop/shared": "workspace:*",
+    "nuxt": "^4.5.2",
+    "tailwindcss": "^4.3.3",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}

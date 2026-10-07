@@ -1,0 +1,32 @@
+@import "@fontsource/vazirmatn/400.css";
+@import "@fontsource/vazirmatn/500.css";
+@import "@fontsource/vazirmatn/600.css";
+@import "@fontsource/vazirmatn/700.css";
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: "Vazirmatn", ui-sans-serif, system-ui, sans-serif;
+}
+/* 
+:root {
+  --ui-bg: #f1f1f1;
+  color-scheme: light;
+}
+
+body {
+  &,
+  :root {
+    color-scheme: light;
+    background-color: var(--ui-bg);
+  }
+
+  &:where(.dark, .dark *) {
+    color-scheme: dark;
+    --ui-bg: #181818;
+    background-color: var(--ui-bg);
+  }
+} */
+html {
+  font-family: var(--font-sans);
+}
