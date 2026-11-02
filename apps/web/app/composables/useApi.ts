@@ -54,7 +54,7 @@ export function useApi() {
    * SSR: call Nest directly — avoids a brittle Nitro self-proxy hop that was 500ing.
    */
   const baseURL = import.meta.server
-    ? String(config.apiProxy || 'http://127.0.0.1:3001').replace(/\/$/, '')
+    ? String(config.apiProxy || 'http://127.0.0.1:4001').replace(/\/$/, '')
     : (config.public.apiBase as string)
 
   // Per-request jar (must not be module-scoped — concurrent SSR).

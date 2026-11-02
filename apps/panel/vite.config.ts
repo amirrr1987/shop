@@ -16,15 +16,17 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173,
+    host: '127.0.0.1',
+    // Avoid Hyper-V excluded ranges (they move; currently ~5119–5532)
+    port: 5600,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:3001',
+        target: 'http://127.0.0.1:4001',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/uploads': {
-        target: 'http://127.0.0.1:3001',
+        target: 'http://127.0.0.1:4001',
         changeOrigin: true,
       },
     },

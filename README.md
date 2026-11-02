@@ -4,9 +4,9 @@
 
 | App | Package | Dev URL |
 | --- | --- | --- |
-| `apps/web` | `@shop/web` | http://localhost:3000 |
-| `apps/api` | `@shop/api` | http://localhost:3001 |
-| `apps/panel` | `@shop/panel` | http://localhost:5173 |
+| `apps/web` | `@shop/web` | http://localhost:4000 |
+| `apps/api` | `@shop/api` | http://localhost:4001 |
+| `apps/panel` | `@shop/panel` | http://localhost:5600 |
 
 ## شروع سریع
 

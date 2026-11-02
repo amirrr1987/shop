@@ -42,7 +42,7 @@ describe('ZarinpalClient', () => {
       client.requestPayment({
         amountRial: 10_000,
         description: 'test',
-        callbackUrl: 'http://localhost:3001/payments/callback',
+        callbackUrl: 'http://localhost:4001/payments/callback',
         orderId: 'order-1',
       }),
     ).rejects.toBeInstanceOf(ServiceUnavailableException);
@@ -61,7 +61,7 @@ describe('ZarinpalClient', () => {
     const result = await client.requestPayment({
       amountRial: 50_000,
       description: 'سفارش تست',
-      callbackUrl: 'http://localhost:3001/payments/callback',
+      callbackUrl: 'http://localhost:4001/payments/callback',
       orderId: 'order-42',
     });
 

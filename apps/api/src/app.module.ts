@@ -32,7 +32,7 @@ import { ReportsModule } from './reports/reports.module.js';
 import { ReviewsModule } from './reviews/reviews.module.js';
 import { SettingsModule } from './settings/settings.module.js';
 import { ShippingModule } from './shipping/shipping.module.js';
-import { UploadsModule } from './uploads/uploads.module.js';
+import { UploadsModule } from './media/uploads.module.js';
 import { UsersModule } from './users/users.module.js';
 import { WishlistModule } from './wishlist/wishlist.module.js';
 

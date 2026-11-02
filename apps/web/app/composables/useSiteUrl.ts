@@ -26,5 +26,5 @@ export function useSiteUrl(): string {
     return normalizeSiteUrl(window.location.origin)
   }
 
-  return 'http://localhost:3000'
+  return 'http://localhost:4000'
 }

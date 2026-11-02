@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 const sentryDsn = process.env.NUXT_PUBLIC_SENTRY_DSN || ''
-const apiProxy = process.env.NUXT_API_PROXY || 'http://127.0.0.1:3001'
+const apiProxy = process.env.NUXT_API_PROXY || 'http://127.0.0.1:4001'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -23,8 +23,9 @@ export default defineNuxtConfig({
     // Default `/api/_nuxt_icon` collides with Nest proxy (`/api/**`).
     localApiEndpoint: '/_nuxt_icon',
   },
+  // 3000 is in Windows Hyper-V excluded range 2905–3004
   devServer: {
-    port: 3000,
+    port: 4000,
   },
   // Avoid Vite cold-start "#app-manifest" resolution errors with routeRules
   // https://github.com/nuxt/nuxt/issues/33606

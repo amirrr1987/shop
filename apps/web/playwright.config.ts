@@ -1,7 +1,7 @@
 import process from 'node:process'
 import { defineConfig, devices } from '@playwright/test'
 
-const webPort = Number(process.env.E2E_WEB_PORT || 3000)
+const webPort = Number(process.env.E2E_WEB_PORT || 4000)
 const webOrigin = process.env.E2E_WEB_URL || `http://127.0.0.1:${webPort}`
 
 /**
@@ -15,7 +15,7 @@ const browserChannel = (process.env.E2E_BROWSER_CHANNEL || 'chrome') as
 
 /**
  * Storefront purchase E2E.
- * Requires API on E2E_API_URL (default http://127.0.0.1:3001) with seed + mock payments.
+ * Requires API on E2E_API_URL (default http://127.0.0.1:4001) with seed + mock payments.
  * Offline / filtered networks: use Chrome/Edge channel — skip `playwright install`.
  */
 export default defineConfig({

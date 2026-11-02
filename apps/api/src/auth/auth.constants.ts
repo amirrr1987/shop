@@ -2,11 +2,11 @@ export const AUTH_CLIENT_HEADER = 'x-shop-client';
 
 export type AuthClient = 'web' | 'panel';
 
-/** Storefront cookies (localhost:3000). */
+/** Storefront cookies (localhost:4000). */
 export const ACCESS_TOKEN_COOKIE = 'access_token';
 export const REFRESH_TOKEN_COOKIE = 'refresh_token';
 
-/** Admin panel cookies (localhost:5173) — separate so sessions do not clash on localhost. */
+/** Admin panel cookies (localhost:5600) — separate so sessions do not clash on localhost. */
 export const ACCESS_TOKEN_COOKIE_PANEL = 'access_token_panel';
 export const REFRESH_TOKEN_COOKIE_PANEL = 'refresh_token_panel';
 

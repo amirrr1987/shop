@@ -45,9 +45,9 @@ yarn-error.log*
 .DS_Store
 *.pem
 
-# Local uploads
-uploads
-apps/api/uploads
+# Local runtime uploads (not apps/api/src/uploads source)
+/uploads/
+/apps/api/uploads/
 
 # DB dumps (keep folder via .gitkeep)
 backups/*

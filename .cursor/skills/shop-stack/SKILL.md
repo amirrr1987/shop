@@ -9,9 +9,9 @@ Monorepo (`pnpm` + Turborepo):
 
 | Path | Role | Dev |
 |------|------|-----|
-| `apps/web` | Nuxt storefront | :3000 |
-| `apps/api` | Nest API | :3001 |
-| `apps/panel` | Vue admin (antdv) | :5173 |
+| `apps/web` | Nuxt storefront | :4000 |
+| `apps/api` | Nest API | :4001 |
+| `apps/panel` | Vue admin (antdv) | :5600 |
 | `packages/shared` | Shared Zod/types | build before API if types change |
 
 ## Invariants

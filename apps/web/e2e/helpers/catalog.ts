@@ -5,7 +5,7 @@ export type SeededProduct = {
 }
 
 function apiBase() {
-  return (process.env.E2E_API_URL || 'http://127.0.0.1:3001').replace(/\/$/, '')
+  return (process.env.E2E_API_URL || 'http://127.0.0.1:4001').replace(/\/$/, '')
 }
 
 async function readJson<T>(response: Response): Promise<T> {

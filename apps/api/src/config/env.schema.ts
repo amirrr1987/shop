@@ -4,7 +4,8 @@ export const envSchema = z.object({
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
     .default('development'),
-  PORT: z.coerce.number().int().positive().default(3001),
+  // 3001 is in Windows Hyper-V excluded range 3005–3104
+  PORT: z.coerce.number().int().positive().default(4001),
 
   DATABASE_HOST: z.string().min(1).default('localhost'),
   DATABASE_PORT: z.coerce.number().int().positive().default(5432),
@@ -60,7 +61,7 @@ export const envSchema = z.object({
   /** Comma-separated browser origins allowed for CORS (credentials). */
   CORS_ORIGINS: z
     .string()
-    .default('http://localhost:3000,http://localhost:5173')
+    .default('http://localhost:4000,http://localhost:5600')
     .transform((value) =>
       value
         .split(',')
@@ -93,13 +94,13 @@ export const envSchema = z.object({
   PAYMENT_CALLBACK_URL: z
     .string()
     .url()
-    .default('http://localhost:3001/payments/callback'),
+    .default('http://localhost:4001/payments/callback'),
 
   /** Final browser page after server-side verify (Nuxt checkout callback). */
   PAYMENT_RETURN_URL: z
     .string()
     .url()
-    .default('http://localhost:3000/checkout/callback'),
+    .default('http://localhost:4000/checkout/callback'),
 
   /**
    * Auto-cancel pending unpaid orders after this many minutes (restores stock).
@@ -133,7 +134,7 @@ export const envSchema = z.object({
   SMTP_USER: z.string().optional().default(''),
   SMTP_PASS: z.string().optional().default(''),
   /** Public storefront URL for email links. */
-  WEB_APP_URL: z.string().url().default('http://localhost:3000'),
+  WEB_APP_URL: z.string().url().default('http://localhost:4000'),
 
   /** log = print OTP to API logger (dev); later providers can be added. */
   SMS_DRIVER: z.enum(['log']).default('log'),
